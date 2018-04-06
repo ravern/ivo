@@ -1,4 +1,4 @@
-package input
+package mouse
 
 type Button int
 
