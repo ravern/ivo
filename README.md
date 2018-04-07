@@ -1,4 +1,4 @@
-[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/ivoeditor/core)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/ivoeditor/ivo)
 
-# core
-Core packages for the Ivo text editor.
+# ivo
+Core packages.
