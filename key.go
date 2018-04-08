@@ -1,11 +1,21 @@
 package ivo
 
-import "strings"
+import (
+	"strconv"
+	"strings"
+)
 
 type Key struct {
 	Code KeyCode
 	Rune rune
 	Mod  KeyMod
+}
+
+func (k Key) hash() string {
+	if k.Code == KeyCodeRune {
+		return string(k.Rune) + strconv.Itoa(int(k.Mod))
+	}
+	return strconv.Itoa(int(k.Code)) + strconv.Itoa(int(k.Mod))
 }
 
 type KeyCode int
