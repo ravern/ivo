@@ -11,6 +11,7 @@ type Key struct {
 	Mod  KeyMod
 }
 
+// TODO improve the way this is hashed
 func (k Key) hash() string {
 	if k.Code == KeyCodeRune {
 		return string(k.Rune) + strconv.Itoa(int(k.Mod))
