@@ -1,20 +1,18 @@
 package ivo
 
 type KeyMap struct {
-	nodes     map[string]*keyMapNode    // maps mode to node
-	fallbacks map[string]func(*Context) // maps mode to fallback
+	nodes map[string]*keyMapNode // maps mode to node
 }
 
 // keyMapNode represents a node in a KeyMap (which is actually a tree).
 type keyMapNode struct {
-	nodes  map[string]*keyMapNode
+	nodes  map[Key]*keyMapNode
 	action func(*Context)
 }
 
 func NewKeyMap() *KeyMap {
 	return &KeyMap{
-		nodes:     make(map[string]*keyMapNode),
-		fallbacks: make(map[string]func(*Context)),
+		nodes: make(map[string]*keyMapNode),
 	}
 }
 
@@ -23,10 +21,10 @@ func (km *KeyMap) Set(mode string, kk []Key, action func(*Context)) {
 	for len(kk) > 0 {
 		k := kk[0]
 		kk = kk[1:]
-		subnode, ok := node.nodes[k.hash()]
+		subnode, ok := node.nodes[k]
 		if !ok {
-			node.nodes[k.hash()] = newKeyMapNode()
-			subnode = node.nodes[k.hash()]
+			node.nodes[k] = newKeyMapNode()
+			subnode = node.nodes[k]
 		}
 		node = subnode
 	}
@@ -34,7 +32,8 @@ func (km *KeyMap) Set(mode string, kk []Key, action func(*Context)) {
 }
 
 func (km *KeyMap) SetFallback(mode string, action func(*Context)) {
-	km.fallbacks[mode] = action
+	node := km.node(mode)
+	node.action = action
 }
 
 func (km *KeyMap) Get(mode string, kk []Key) (func(*Context), bool, bool) {
@@ -42,13 +41,13 @@ func (km *KeyMap) Get(mode string, kk []Key) (func(*Context), bool, bool) {
 	for len(kk) > 0 {
 		k := kk[0]
 		kk = kk[1:]
-		subnode, ok := node.nodes[k.hash()]
+		subnode, ok := node.nodes[k]
 		if !ok {
-			fallback, ok := km.fallbacks[mode]
-			if !ok {
+			node := km.node(mode)
+			if node.action == nil {
 				return nil, false, false
 			}
-			return fallback, false, true
+			return node.action, false, true
 		}
 		node = subnode
 	}
@@ -73,6 +72,6 @@ func (km *KeyMap) node(mode string) *keyMapNode {
 // newKeyMapNode creates an empty keyMapNode.
 func newKeyMapNode() *keyMapNode {
 	return &keyMapNode{
-		nodes: make(map[string]*keyMapNode),
+		nodes: make(map[Key]*keyMapNode),
 	}
 }

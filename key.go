@@ -1,7 +1,6 @@
 package ivo
 
 import (
-	"strconv"
 	"strings"
 
 	termbox "github.com/nsf/termbox-go"
@@ -167,14 +166,6 @@ func newKey(e termbox.Event) Key {
 		k.Mod |= KeyModAlt
 	}
 	return k
-}
-
-// hash returns a unique identifier for this key to be used in hash maps.
-func (k Key) hash() string {
-	if k.Code == KeyCodeRune {
-		return string(k.Rune) + ":" + strconv.Itoa(int(k.Mod))
-	}
-	return strconv.Itoa(int(k.Code)) + ":" + strconv.Itoa(int(k.Mod))
 }
 
 type KeyCode int
