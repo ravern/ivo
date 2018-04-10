@@ -4,6 +4,7 @@ type KeyMap struct {
 	nodes map[string]*keyMapNode // maps mode to node
 }
 
+// keyMapNode represents a node in a KeyMap (which is actually a tree).
 type keyMapNode struct {
 	nodes  map[string]*keyMapNode
 	action func(*Context)
@@ -48,6 +49,8 @@ func (km *KeyMap) Get(mode string, kk []Key) (func(*Context), bool, bool) {
 	return node.action, more, true
 }
 
+// node returns the corresponding keyMapNode for that mode. It creates a new keyMapNode for
+// that mode if it doesn't exist.
 func (km *KeyMap) node(mode string) *keyMapNode {
 	node, ok := km.nodes[mode]
 	if !ok {
@@ -57,6 +60,7 @@ func (km *KeyMap) node(mode string) *keyMapNode {
 	return node
 }
 
+// newKeyMapNode creates an empty keyMapNode.
 func newKeyMapNode() *keyMapNode {
 	return &keyMapNode{
 		nodes: make(map[string]*keyMapNode),

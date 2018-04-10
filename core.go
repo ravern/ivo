@@ -38,6 +38,9 @@ func (c *Core) Run() {
 	}
 }
 
+// pollEvent polls events from termbox and returns them. Some events are ignored, and
+// another event is polled. It also modifies the EventNone to become an EventKey with
+// KeyEsc.
 func (c *Core) pollEvent() termbox.Event {
 	for {
 		switch e := termbox.PollRawEvent(c.data); e.Type {
@@ -50,6 +53,8 @@ func (c *Core) pollEvent() termbox.Event {
 			}
 			return e
 		case termbox.EventResize:
+			break
+		case termbox.EventInterrupt:
 			break
 		case termbox.EventError:
 			c.Logger.Printf("termbox: polled error event: %v", e.Err)

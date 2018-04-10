@@ -13,6 +13,8 @@ type Key struct {
 	Mod  KeyMod
 }
 
+// newKey creates a new Key based on the values found in the termbox.Event. It does not
+// handle the aliasing problem.
 func newKey(e termbox.Event) Key {
 	var k Key
 	if e.Ch == 0 {
@@ -167,12 +169,12 @@ func newKey(e termbox.Event) Key {
 	return k
 }
 
-// TODO improve the way this is hashed
+// hash returns a unique identifier for this key to be used in hash maps.
 func (k Key) hash() string {
 	if k.Code == KeyCodeRune {
-		return string(k.Rune) + strconv.Itoa(int(k.Mod))
+		return string(k.Rune) + ":" + strconv.Itoa(int(k.Mod))
 	}
-	return strconv.Itoa(int(k.Code)) + strconv.Itoa(int(k.Mod))
+	return strconv.Itoa(int(k.Code)) + ":" + strconv.Itoa(int(k.Mod))
 }
 
 type KeyCode int
