@@ -1,15 +1,19 @@
 package ivo
 
+// Mouse is a mouse event.
 type Mouse struct {
-	Button MouseButton
+	// Action is the action that occured.
+	Action MouseAction
 	Col    int
 	Row    int
 }
 
-type MouseButton int
+// MouseAction represents a mouse button, scroll or release.
+type MouseAction int
 
+// Supported mouse actions.
 const (
-	MouseButtonLeft MouseButton = iota
+	MouseButtonLeft MouseAction = iota
 	MouseButtonMiddle
 	MouseButtonRight
 	MouseButtonRelease
@@ -17,8 +21,8 @@ const (
 	MouseWheelDown
 )
 
-func (mb MouseButton) String() string {
-	switch mb {
+func (ma MouseAction) String() string {
+	switch ma {
 	case MouseButtonLeft:
 		return "left"
 	case MouseButtonMiddle:

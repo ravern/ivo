@@ -6,10 +6,19 @@ import (
 	termbox "github.com/nsf/termbox-go"
 )
 
+// Key is a key event.
 type Key struct {
+	// Code is the key that was pressed. If the key is not special, then it will be
+	// set to KeyCodeRune and the raw value is set on Rune.
 	Code KeyCode
+
+	// Rune is the raw value of the key press. It will not be set unless Code is set to
+	// KeyCodeRune.
 	Rune rune
-	Mod  KeyMod
+
+	// Mod contains any modifier keys that were pressed. The modifiers are applied as
+	// masks. If no modifiers were pressed then the KeyModNone value is assigned.
+	Mod KeyMod
 }
 
 // newKey creates a new Key based on the values found in the termbox.Event. It does not
@@ -168,8 +177,10 @@ func newKey(e termbox.Event) Key {
 	return k
 }
 
+// KeyCode represents a special key.
 type KeyCode int
 
+// Supported special keys.
 const (
 	KeyCodeRune KeyCode = iota
 	KeyCodeF1
@@ -261,8 +272,10 @@ func (kc KeyCode) String() string {
 	return "invalid"
 }
 
+// KeyMod represents a modifier key.
 type KeyMod int
 
+// Supported modifier keys.
 const (
 	KeyModNone KeyMod = 0
 	KeyModCtrl KeyMod = 1 << (iota - 1)
