@@ -1,4 +1,7 @@
 package ivo
 
-type Context struct {
+import "log"
+
+type Context interface {
+	Logger() *log.Logger
 }

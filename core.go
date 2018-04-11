@@ -8,7 +8,6 @@ import (
 
 type Core struct {
 	Logger *log.Logger
-	KeyMap *KeyMap
 }
 
 func NewCore() *Core {
@@ -25,12 +24,6 @@ func (c *Core) Run() {
 	termbox.SetInputMode(termbox.InputAlt | termbox.InputMouse)
 	termbox.SetOutputMode(termbox.OutputNormal)
 
-	c.pollEvents()
-}
-
-// pollEvents polls events from termbox and processes them. Some events like Resize are
-// ignored. It also modifies the EventNone to become an EventKey with KeyEsc.
-func (c *Core) pollEvents() termbox.Event {
 	var (
 		data = make([]byte, 32)
 	)
