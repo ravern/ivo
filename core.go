@@ -9,14 +9,10 @@ import (
 type Core struct {
 	Logger *log.Logger
 	KeyMap *KeyMap
-
-	data []byte // data of raw event polling
 }
 
 func NewCore() *Core {
-	return &Core{
-		data: make([]byte, 32),
-	}
+	return &Core{}
 }
 
 func (c *Core) Run() {
@@ -27,31 +23,32 @@ func (c *Core) Run() {
 	defer termbox.Close()
 
 	termbox.SetInputMode(termbox.InputAlt | termbox.InputMouse)
+	termbox.SetOutputMode(termbox.OutputNormal)
 
-	for {
-		switch e := c.pollEvent(); e.Type {
-		case termbox.EventKey:
-			newKey(e)
-		case termbox.EventMouse:
-			break
-		}
-	}
+	c.pollEvents()
 }
 
-// pollEvent polls events from termbox and returns them. Some events are ignored, and
-// another event is polled. It also modifies the EventNone to become an EventKey with
-// KeyEsc.
-func (c *Core) pollEvent() termbox.Event {
+// pollEvents polls events from termbox and processes them. Some events like Resize are
+// ignored. It also modifies the EventNone to become an EventKey with KeyEsc.
+func (c *Core) pollEvents() termbox.Event {
+	var (
+		data = make([]byte, 32)
+	)
 	for {
-		switch e := termbox.PollRawEvent(c.data); e.Type {
+		switch e := termbox.PollRawEvent(data); e.Type {
 		case termbox.EventRaw:
-			data := c.data[:e.N]
+			data := data[:e.N]
 			e := termbox.ParseEvent(data)
 			if e.Type == termbox.EventNone {
 				e.Type = termbox.EventKey
 				e.Key = termbox.KeyEsc
 			}
-			return e
+			switch e.Type {
+			case termbox.EventKey:
+				newKey(e)
+			case termbox.EventMouse:
+				break
+			}
 		case termbox.EventResize:
 			break
 		case termbox.EventInterrupt:
@@ -59,7 +56,7 @@ func (c *Core) pollEvent() termbox.Event {
 		case termbox.EventError:
 			c.Logger.Printf("termbox: polled error event: %v", e.Err)
 		default:
-			c.Logger.Print("termbox: polled unknwon event")
+			c.Logger.Print("termbox: polled unknown event")
 		}
 	}
 }
