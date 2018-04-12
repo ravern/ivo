@@ -6,18 +6,31 @@ import (
 	termbox "github.com/nsf/termbox-go"
 )
 
-type Core struct {
-	Logger *log.Logger
-	Buffer Buffer
+var (
+	logger *log.Logger
+	buffer Buffer
+)
+
+// SetLogger sets the logger. If the logger is not set, then a default logger will
+// be used, which logs to os.Stdout.
+func SetLogger(l *log.Logger) {
+	logger = l
 }
 
-func NewCore() *Core {
-	return &Core{}
+// SetBuffer sets the buffer. If the buffer is not set, Run will fail.
+func SetBuffer(b Buffer) {
+	buffer = b
 }
 
-func (c *Core) Run() {
+// Run performs the main loop and blocks until the editor is quit.
+func Run() {
+	if buffer == nil {
+		logger.Printf("core: buffer is nil")
+		return
+	}
+
 	if err := termbox.Init(); err != nil {
-		c.Logger.Printf("termbox: could not initialize: %v", err)
+		logger.Printf("termbox: could not initialize: %v", err)
 		return
 	}
 	defer termbox.Close()
@@ -46,9 +59,9 @@ func (c *Core) Run() {
 		case termbox.EventInterrupt:
 			break
 		case termbox.EventError:
-			c.Logger.Printf("termbox: polled error event: %v", e.Err)
+			logger.Printf("termbox: polled error event: %v", e.Err)
 		default:
-			c.Logger.Print("termbox: polled unknown event")
+			logger.Print("termbox: polled unknown event")
 		}
 	}
 }
