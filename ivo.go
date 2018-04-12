@@ -6,7 +6,7 @@ import (
 
 var (
 	logger Logger
-	buffer Buffer
+	window Window
 )
 
 // SetLogger sets the logger. If the logger is not set, then a default logger will
@@ -15,19 +15,18 @@ func SetLogger(l Logger) {
 	logger = l
 }
 
-// SetBuffer sets the buffer. If the buffer is not set, Run will fail.
-func SetBuffer(b Buffer) {
-	buffer = b
+// SetWindow sets the window. If the window is not set, Run will fail.
+func SetWindow(w Window) {
+	window = w
 }
 
-// Run performs the main loop and blocks until the editor is quit.
+// Run performs the main loop and blocks until the editor quits.
 func Run() {
 	if logger == nil {
 		logger = defaultLogger
 	}
-
-	if buffer == nil {
-		logger.Errorf("core: buffer is nil")
+	if window == nil {
+		logger.Errorf("core: window is nil")
 		return
 	}
 
@@ -36,7 +35,6 @@ func Run() {
 		return
 	}
 	defer termbox.Close()
-
 	termbox.SetInputMode(termbox.InputAlt | termbox.InputMouse)
 	termbox.SetOutputMode(termbox.OutputNormal)
 
