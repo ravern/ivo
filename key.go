@@ -6,7 +6,7 @@ import (
 	termbox "github.com/nsf/termbox-go"
 )
 
-// Key is a key event.
+// Key is a key press event.
 type Key struct {
 	// Code is the key that was pressed. If the key is not special, then it will be
 	// set to KeyCodeRune and the raw value is set on Rune.

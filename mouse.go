@@ -2,7 +2,7 @@ package ivo
 
 import termbox "github.com/nsf/termbox-go"
 
-// Mouse is a mouse event.
+// Mouse is a mouse action event.
 type Mouse struct {
 	// Action is the mouse action that occured.
 	Action MouseAction
