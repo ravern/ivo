@@ -8,6 +8,7 @@ import (
 
 type Core struct {
 	Logger *log.Logger
+	Buffer Buffer
 }
 
 func NewCore() *Core {
@@ -24,10 +25,8 @@ func (c *Core) Run() {
 	termbox.SetInputMode(termbox.InputAlt | termbox.InputMouse)
 	termbox.SetOutputMode(termbox.OutputNormal)
 
-	var (
-		data = make([]byte, 32)
-	)
 	for {
+		data := make([]byte, 32)
 		switch e := termbox.PollRawEvent(data); e.Type {
 		case termbox.EventRaw:
 			data := data[:e.N]

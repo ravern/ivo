@@ -4,11 +4,11 @@ import termbox "github.com/nsf/termbox-go"
 
 // Mouse is a mouse event.
 type Mouse struct {
-	// Action is the action that occured.
+	// Action is the mouse action that occured.
 	Action MouseAction
 
-	Col int // x coordinate
-	Row int // y coordinate
+	Col int
+	Row int
 }
 
 // newMouse creates a new Mouse based on the values found in the termbox.Event.
