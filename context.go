@@ -1,7 +1,5 @@
 package ivo
 
-import "log"
-
 // Context contains important objects and methods for the buffer to use.
 //
 // For Buffers acting as a proxy to other Buffers, Context can and should
@@ -10,7 +8,7 @@ import "log"
 type Context interface {
 	// Logger should be used to perform all logging. In the case of core Context,
 	// it is the logger assigned to the Core object.
-	Logger() *log.Logger
+	Logger() Logger
 
 	// Cells is the individual cells of the screen. These are usually not set
 	// directly, instead using the `ivo/buffer` package to draw different

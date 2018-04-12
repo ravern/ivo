@@ -1,19 +1,17 @@
 package ivo
 
 import (
-	"log"
-
 	termbox "github.com/nsf/termbox-go"
 )
 
 var (
-	logger *log.Logger
+	logger Logger
 	buffer Buffer
 )
 
 // SetLogger sets the logger. If the logger is not set, then a default logger will
 // be used, which logs to os.Stdout.
-func SetLogger(l *log.Logger) {
+func SetLogger(l Logger) {
 	logger = l
 }
 
@@ -24,13 +22,17 @@ func SetBuffer(b Buffer) {
 
 // Run performs the main loop and blocks until the editor is quit.
 func Run() {
+	if logger == nil {
+		logger = defaultLogger
+	}
+
 	if buffer == nil {
-		logger.Printf("core: buffer is nil")
+		logger.Errorf("core: buffer is nil")
 		return
 	}
 
 	if err := termbox.Init(); err != nil {
-		logger.Printf("termbox: could not initialize: %v", err)
+		logger.Errorf("termbox: could not initialize: %v", err)
 		return
 	}
 	defer termbox.Close()
@@ -59,9 +61,9 @@ func Run() {
 		case termbox.EventInterrupt:
 			break
 		case termbox.EventError:
-			logger.Printf("termbox: polled error event: %v", e.Err)
+			logger.Errorf("termbox: polled error event: %v", e.Err)
 		default:
-			logger.Print("termbox: polled unknown event")
+			logger.Errorf("termbox: polled unknown event")
 		}
 	}
 }
