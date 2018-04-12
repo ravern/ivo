@@ -4,6 +4,7 @@ import (
 	termbox "github.com/nsf/termbox-go"
 )
 
+// main objects.
 var (
 	logger Logger
 	window Window

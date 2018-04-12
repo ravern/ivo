@@ -83,9 +83,8 @@ func (c CellColor) String() string {
 		return "cyan"
 	case CellColorWhite:
 		return "white"
-	default:
-		return "invalid"
 	}
+	return "invalid"
 }
 
 // CellAttr represents an attribute a cell might have.
@@ -106,7 +105,6 @@ func (ca CellAttr) String() string {
 		return "bold"
 	case CellAttrUnderline:
 		return "underline"
-	default:
-		return "invalid"
 	}
+	return "invalid"
 }

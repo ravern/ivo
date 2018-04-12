@@ -6,6 +6,78 @@ import (
 	termbox "github.com/nsf/termbox-go"
 )
 
+// Command is an arbituary command sent to windows.
+//
+// Command is mainly used to communicate between windows and for user commands
+// (e.g. through the command bar). Commands should be used only when necessary,
+// since they inherently break the type system.
+type Command struct {
+	Name    string
+	Payload map[string]interface{}
+}
+
+// Mouse is a mouse action event.
+type Mouse struct {
+	// Action is the mouse action that occured.
+	Action MouseAction
+
+	Col int
+	Row int
+}
+
+// newMouse creates a new Mouse based on the values found in the termbox.Event.
+func newMouse(e termbox.Event) Mouse {
+	var m Mouse
+	m.Col = e.MouseX
+	m.Row = e.MouseY
+	switch e.Key {
+	case termbox.MouseLeft:
+		m.Action = MouseButtonLeft
+	case termbox.MouseMiddle:
+		m.Action = MouseButtonMiddle
+	case termbox.MouseRight:
+		m.Action = MouseButtonRight
+	case termbox.MouseRelease:
+		m.Action = MouseButtonRelease
+	case termbox.MouseWheelUp:
+		m.Action = MouseWheelUp
+	case termbox.MouseWheelDown:
+		m.Action = MouseWheelDown
+	}
+	return m
+}
+
+// MouseAction represents a mouse button, scroll or release.
+type MouseAction int
+
+// Supported mouse actions.
+const (
+	MouseButtonLeft MouseAction = iota
+	MouseButtonMiddle
+	MouseButtonRight
+	MouseButtonRelease
+	MouseWheelUp
+	MouseWheelDown
+)
+
+func (ma MouseAction) String() string {
+	switch ma {
+	case MouseButtonLeft:
+		return "left"
+	case MouseButtonMiddle:
+		return "middle"
+	case MouseButtonRight:
+		return "right"
+	case MouseButtonRelease:
+		return "release"
+	case MouseWheelUp:
+		return "wheelUp"
+	case MouseWheelDown:
+		return "wheelDown"
+	}
+	return "invalid"
+}
+
 // Key is a key press event.
 type Key struct {
 	// Code is the key that was pressed. If the key is not special, then it will be
