@@ -47,17 +47,17 @@ func SetWindow(w Window) {
 //
 // Run will block until the ivo or the Window quits.
 func Run() {
-	if win == nil {
-		log.Errorf("core: win is nil")
-		return
-	}
-	defer win.Close(newContext())
-
 	if err := termbox.Init(); err != nil {
 		log.Errorf("termbox: could not initialize: %v", err)
 		return
 	}
 	defer termbox.Close()
+
+	if win == nil {
+		log.Errorf("core: win is nil")
+		return
+	}
+	defer win.Close(newContext())
 
 	termbox.SetInputMode(termbox.InputAlt | termbox.InputMouse)
 	termbox.SetOutputMode(termbox.OutputNormal)

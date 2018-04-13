@@ -70,13 +70,13 @@ func (ctx *context) Logger() Logger {
 // Quit signals the caller to quit.
 func (ctx *context) Quit() {
 	quit = true
-	termbox.Interrupt()
+	go termbox.Interrupt()
 }
 
 // Command sends an arbituary command to the caller.
 func (ctx *context) Command(c Command) {
 	cmd = &c
-	termbox.Interrupt()
+	go termbox.Interrupt()
 }
 
 // Buffer is the buffer holding the cells of the screen.
