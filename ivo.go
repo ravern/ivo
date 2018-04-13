@@ -10,22 +10,29 @@ var (
 	window Window
 )
 
-// SetLogger sets the logger. If the logger is not set, then a default logger will
-// be used, which logs to os.Stdout.
+func init() {
+	logger = defaultLogger
+}
+
+// SetLogger sets the logger.
+//
+// If the logger is not set, then a default logger will be used,
+// which logs to os.Stdout.
 func SetLogger(l Logger) {
 	logger = l
 }
 
-// SetWindow sets the window. If the window is not set, Run will fail.
+// SetWindow sets the window.
+//
+// If the window is not set, Run will fail.
 func SetWindow(w Window) {
 	window = w
 }
 
-// Run performs the main loop and blocks until the editor quits.
+// Run runs the main loop.
+//
+// Run will block until the ivo or the Window quits.
 func Run() {
-	if logger == nil {
-		logger = defaultLogger
-	}
 	if window == nil {
 		logger.Errorf("core: window is nil")
 		return

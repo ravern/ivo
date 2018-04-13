@@ -8,9 +8,10 @@ import (
 
 // Command is an arbituary command sent to windows.
 //
-// Command is mainly used to communicate between windows and for user commands
-// (e.g. through the command bar). Commands should be used only when necessary,
-// since they inherently break the type system.
+// Command is mainly used to communicate between windows and for
+// user commands (e.g. through the command bar). Commands should be
+// used only when necessary, since they inherently break the type
+// system.
 type Command struct {
 	Name    string
 	Payload map[string]interface{}
@@ -25,7 +26,8 @@ type Mouse struct {
 	Row int
 }
 
-// newMouse creates a new Mouse based on the values found in the termbox.Event.
+// newMouse creates a new Mouse based on the values found in the
+// termbox.Event.
 func newMouse(e termbox.Event) Mouse {
 	var m Mouse
 	m.Col = e.MouseX
@@ -80,21 +82,26 @@ func (ma MouseAction) String() string {
 
 // Key is a key press event.
 type Key struct {
-	// Code is the key that was pressed. If the key is not special, then it will be
-	// set to KeyCodeRune and the raw value is set on Rune.
+	// Code is the key that was pressed.
+	//
+	// If the key is not special, then it will be set to KeyCodeRune
+	// and the raw value is set on Rune.
 	Code KeyCode
 
-	// Rune is the raw value of the key press. It will not be set unless Code is set to
-	// KeyCodeRune.
+	// Rune is the raw value of the key press.
+	//
+	// It will not be set unless Code is set to KeyCodeRune.
 	Rune rune
 
-	// Mod contains any modifier keys that were pressed. The modifiers are applied as
-	// masks. If no modifiers were pressed then the KeyModNone value is assigned.
+	// Mod contains any modifier keys that were pressed.
+	//
+	// The modifiers are applied as masks. If no modifiers were pressed
+	// then the KeyModNone value is assigned.
 	Mod KeyMod
 }
 
-// newKey creates a new Key based on the values found in the termbox.Event. It does not
-// handle the aliasing problem.
+// newKey creates a new Key based on the values found in the
+// termbox.Event. It does not handle the aliasing problem.
 func newKey(e termbox.Event) Key {
 	var k Key
 	if e.Ch == 0 {

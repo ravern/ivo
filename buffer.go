@@ -8,8 +8,8 @@ type Buffer struct {
 	cc [][]Cell
 }
 
-// NewBuffer creates a new collection of cells with the specified number of
-// columns and rows.
+// NewBuffer creates a new collection of cells with the specified
+// number of columns and rows.
 func NewBuffer(cols, rows int) Buffer {
 	cc := make([][]Cell, rows)
 	for i := range cc {
@@ -22,8 +22,9 @@ func NewBuffer(cols, rows int) Buffer {
 	}
 }
 
-// Set sets a cell at the specified column and row. If the column and/or row
-// exceeds the bounds, nothing will be set.
+// Set sets a cell at the specified column and row.
+//
+// If the column and/or row exceeds the bounds, nothing will be set.
 func (b Buffer) Set(col, row int, c Cell) {
 	if row >= b.Rows || col >= b.Cols {
 		return
@@ -31,7 +32,8 @@ func (b Buffer) Set(col, row int, c Cell) {
 	b.cc[row][col] = c
 }
 
-// Get returns the cell at the specified column and row.
+// Get returns the cell at the specified column and row and whether it
+// exists.
 func (b Buffer) Get(col, row int) (Cell, bool) {
 	if row >= b.Rows || col >= b.Cols {
 		return Cell{}, false
