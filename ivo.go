@@ -36,6 +36,7 @@ func Run() {
 		return
 	}
 	defer termbox.Close()
+
 	termbox.SetInputMode(termbox.InputAlt | termbox.InputMouse)
 	termbox.SetOutputMode(termbox.OutputNormal)
 
