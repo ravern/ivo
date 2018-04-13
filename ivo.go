@@ -22,6 +22,10 @@ func init() {
 
 // SetLogger sets the logger.
 //
+// The logger set will be passed into the Window via the Context.
+// This will be the logger used for all logging in the core, and
+// it should also be used by the Window.
+//
 // If the logger is not set, then a default log will be used,
 // which logs to os.Stderr. Once the main loop is started, this
 // won't do anything.
