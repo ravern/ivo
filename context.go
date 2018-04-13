@@ -29,7 +29,7 @@ type Context interface {
 	//
 	// This is often used more for any custom Window proxies, for
 	// example to broadcast a command to other Windows.
-	Command(*Command)
+	Command(Command)
 
 	// Buffer is the buffer holding the cells of the screen.
 	//
@@ -74,8 +74,8 @@ func (ctx *context) Quit() {
 }
 
 // Command sends an arbituary command to the caller.
-func (ctx *context) Command(c *Command) {
-	cmd = c
+func (ctx *context) Command(c Command) {
+	cmd = &c
 	termbox.Interrupt()
 }
 

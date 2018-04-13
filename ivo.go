@@ -65,7 +65,7 @@ func Run() {
 	started = true
 	for !quit {
 		if cmd != nil {
-			// TODO perform command
+			win.Command(newContext(), *cmd)
 			cmd = nil
 		}
 
@@ -80,9 +80,9 @@ func Run() {
 			}
 			switch e.Type {
 			case termbox.EventKey:
-				// TODO perform key
+				win.Key(newContext(), newKey(e))
 			case termbox.EventMouse:
-				// TODO perform mouse
+				win.Mouse(newContext(), newMouse(e))
 			}
 		case termbox.EventResize:
 			break
