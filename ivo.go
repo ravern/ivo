@@ -17,13 +17,13 @@ var (
 )
 
 func init() {
-	// TODO set logger
+	log = newLogger()
 }
 
 // SetLogger sets the logger.
 //
 // If the logger is not set, then a default log will be used,
-// which logs to os.Stdout. Once the main loop is started, this
+// which logs to os.Stderr. Once the main loop is started, this
 // won't do anything.
 func SetLogger(l Logger) {
 	if started {
