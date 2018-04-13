@@ -5,15 +5,15 @@ import (
 )
 
 var (
-	log Logger
-	win Window
-	ctx *context
-	cmd *Command
+	log Logger   // main logger
+	win Window   // main window
+	ctx *context // current context
+	cmd *Command // command to be sent
 )
 
 var (
-	started bool
-	quit    bool
+	started bool // whether main loop has started
+	quit    bool // whether main loop should end
 )
 
 func init() {
@@ -62,9 +62,11 @@ func Run() {
 	termbox.SetInputMode(termbox.InputAlt | termbox.InputMouse)
 	termbox.SetOutputMode(termbox.OutputNormal)
 
+	started = true
 	for !quit {
 		if cmd != nil {
 			// TODO perform command
+			cmd = nil
 		}
 
 		data := make([]byte, 32)

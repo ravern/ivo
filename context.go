@@ -49,9 +49,13 @@ type context struct {
 
 // newContext creates a new context, expiring the previous one.
 func newContext() *context {
-	ctx.expired = true
+	if ctx != nil {
+		ctx.expired = true
+	}
+
 	cols, rows := termbox.Size()
 	buf := newBuffer(cols, rows)
+
 	ctx = &context{
 		buf: buf,
 	}
