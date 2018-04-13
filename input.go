@@ -12,8 +12,11 @@ import (
 // user commands (e.g. through the command bar). Commands should be
 // used only when necessary, since they inherently break the type
 // system.
+//
+// The various Commands available for a Window should be well-documented
+// at the package level.
 type Command struct {
-	Name    string
+	Name    string // should be CamelCase
 	Payload map[string]interface{}
 }
 
