@@ -7,5 +7,3 @@ type Logger interface {
 	Error(v ...interface{})
 	Errorf(format string, v ...interface{})
 }
-
-var defaultLogger Logger

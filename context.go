@@ -1,11 +1,13 @@
 package ivo
 
+import termbox "github.com/nsf/termbox-go"
+
 // Context contains important objects and methods for the window
 // to use.
 //
-// When a Context is passed to a Window via its methods, some of
-// the methods of the previous Context that was passed will no
-// longer work. This includes Buffer and Render.
+// When a Context is passed to a Window via its methods, the
+// previous Context expires. Once a Context is expired, Buffer
+// and Render will no longer do anything.
 //
 // For Windows acting as a proxy to other Windows, Context can
 // and should be implemented for the purpose of that Window,
@@ -33,8 +35,80 @@ type Context interface {
 	//
 	// These are usually not set directly, instead using the
 	// `ivo/window` package to draw different components.
-	Buffer() Buffer
+	Buffer() *Buffer
 
 	// Render updates the screen with the contents of Buffer.
 	Render()
+}
+
+// context is the core implementation of Context.
+type context struct {
+	buf     *Buffer
+	expired bool
+}
+
+// newContext creates a new context, expiring the previous one.
+func newContext() *context {
+	ctx.expired = true
+	cols, rows := termbox.Size()
+	buf := newBuffer(cols, rows)
+	ctx = &context{
+		buf: buf,
+	}
+	return ctx
+}
+
+// Logger should be used to perform all logging.
+func (ctx *context) Logger() Logger {
+	return log
+}
+
+// Quit signals the caller to quit.
+func (ctx *context) Quit() {
+	quit = true
+	termbox.Interrupt()
+}
+
+// Command sends an arbituary command to the caller.
+func (ctx *context) Command(c *Command) {
+	cmd = c
+	termbox.Interrupt()
+}
+
+// Buffer is the buffer holding the cells of the screen.
+func (ctx *context) Buffer() *Buffer {
+	if ctx.expired {
+		return nil
+	}
+	return ctx.buf
+}
+
+// Render updates the screen with the contents of Buffer.
+func (ctx *context) Render() {
+	if ctx.expired {
+		return
+	}
+
+	// Perform actual rendering
+	for row := 0; row < ctx.buf.Rows; row++ {
+		for col := 0; col < ctx.buf.Cols; col++ {
+			c, ok := ctx.buf.Get(col, row)
+			if !ok {
+				continue
+			}
+
+			fg := termbox.Attribute(c.Fore)
+			if c.Attr&CellAttrBold != 0 {
+				fg |= termbox.AttrBold
+			}
+			if c.Attr&CellAttrUnderline != 0 {
+				fg |= termbox.AttrUnderline
+			}
+			bg := termbox.Attribute(c.Back)
+			termbox.SetCell(col, row, c.Rune, fg, bg)
+		}
+	}
+	if err := termbox.Flush(); err != nil {
+		log.Errorf("termbox: failed to flush: %v", err)
+	}
 }

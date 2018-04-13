@@ -4,42 +4,57 @@ import (
 	termbox "github.com/nsf/termbox-go"
 )
 
-// main objects.
 var (
-	logger Logger
-	window Window
+	log Logger
+	win Window
+	ctx *context
+	cmd *Command
+)
+
+var (
+	started bool
+	quit    bool
 )
 
 func init() {
-	logger = defaultLogger
+	// TODO set logger
 }
 
 // SetLogger sets the logger.
 //
-// If the logger is not set, then a default logger will be used,
-// which logs to os.Stdout.
+// If the logger is not set, then a default log will be used,
+// which logs to os.Stdout. Once the main loop is started, this
+// won't do anything.
 func SetLogger(l Logger) {
-	logger = l
+	if started {
+		return
+	}
+	log = l
 }
 
 // SetWindow sets the window.
 //
-// If the window is not set, Run will fail.
+// If the window is not set, Run will fail. Once the main loop
+// is started, this won't do anything.
 func SetWindow(w Window) {
-	window = w
+	if started {
+		return
+	}
+	win = w
 }
 
 // Run runs the main loop.
 //
 // Run will block until the ivo or the Window quits.
 func Run() {
-	if window == nil {
-		logger.Errorf("core: window is nil")
+	if win == nil {
+		log.Errorf("core: win is nil")
 		return
 	}
+	defer win.Close(newContext())
 
 	if err := termbox.Init(); err != nil {
-		logger.Errorf("termbox: could not initialize: %v", err)
+		log.Errorf("termbox: could not initialize: %v", err)
 		return
 	}
 	defer termbox.Close()
@@ -47,7 +62,11 @@ func Run() {
 	termbox.SetInputMode(termbox.InputAlt | termbox.InputMouse)
 	termbox.SetOutputMode(termbox.OutputNormal)
 
-	for {
+	for !quit {
+		if cmd != nil {
+			// TODO perform command
+		}
+
 		data := make([]byte, 32)
 		switch e := termbox.PollRawEvent(data); e.Type {
 		case termbox.EventRaw:
@@ -59,18 +78,18 @@ func Run() {
 			}
 			switch e.Type {
 			case termbox.EventKey:
-				newKey(e)
+				// TODO perform key
 			case termbox.EventMouse:
-				break
+				// TODO perform mouse
 			}
 		case termbox.EventResize:
 			break
 		case termbox.EventInterrupt:
 			break
 		case termbox.EventError:
-			logger.Errorf("termbox: polled error event: %v", e.Err)
+			log.Errorf("termbox: polled error event: %v", e.Err)
 		default:
-			logger.Errorf("termbox: polled unknown event")
+			log.Errorf("termbox: polled unknown event")
 		}
 	}
 }

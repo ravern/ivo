@@ -5,17 +5,17 @@ type Buffer struct {
 	Cols int
 	Rows int
 
-	cc [][]Cell
+	cc [][]*Cell
 }
 
-// NewBuffer creates a new collection of cells with the specified
+// newBuffer creates a new collection of cells with the specified
 // number of columns and rows.
-func NewBuffer(cols, rows int) Buffer {
-	cc := make([][]Cell, rows)
+func newBuffer(cols, rows int) *Buffer {
+	cc := make([][]*Cell, rows)
 	for i := range cc {
-		cc[i] = make([]Cell, cols)
+		cc[i] = make([]*Cell, cols)
 	}
-	return Buffer{
+	return &Buffer{
 		Cols: cols,
 		Rows: rows,
 		cc:   cc,
@@ -29,7 +29,7 @@ func (b Buffer) Set(col, row int, c Cell) {
 	if row >= b.Rows || col >= b.Cols {
 		return
 	}
-	b.cc[row][col] = c
+	b.cc[row][col] = &c
 }
 
 // Get returns the cell at the specified column and row and whether it
@@ -38,7 +38,8 @@ func (b Buffer) Get(col, row int) (Cell, bool) {
 	if row >= b.Rows || col >= b.Cols {
 		return Cell{}, false
 	}
-	return b.cc[row][col], true
+	c := b.cc[row][col]
+	return *c, c != nil
 }
 
 // Cell is a cell on the terminal screen.
