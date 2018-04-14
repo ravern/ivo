@@ -21,6 +21,13 @@ type Command struct {
 }
 
 // Mouse is a mouse action event.
+//
+// To track whether the event was a movement from the last mouse event,
+// the previous event can be stored, to check whether the Action is
+// the same. If Action is the same, it means the event was a movement.
+//
+// To track which mouse button was release, the previous event can
+// be stored, to check which button was originally pressed.
 type Mouse struct {
 	// Action is the mouse action that occured.
 	Action MouseAction
