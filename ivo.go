@@ -89,7 +89,7 @@ func Run() {
 				win.Mouse(newContext(), newMouse(e))
 			}
 		case termbox.EventResize:
-			break
+			win.Resize(newContext())
 		case termbox.EventInterrupt:
 			break
 		case termbox.EventError:

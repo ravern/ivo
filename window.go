@@ -31,4 +31,7 @@ type Window interface {
 
 	// Mouse is called when a mouse action is performed.
 	Mouse(Context, Mouse)
+
+	// Resize is called when the terminal is resized.
+	Resize(Context)
 }
