@@ -14,3 +14,17 @@ func (l Location) int(max int) (int, bool) {
 	}
 	return loc, true
 }
+
+type locationSlice []Location
+
+func (l locationSlice) Len() int {
+	return len(l)
+}
+
+func (l locationSlice) Less(i int, j int) bool {
+	return l[i] < l[j]
+}
+
+func (l locationSlice) Swap(i int, j int) {
+	l[i], l[j] = l[j], l[i]
+}
