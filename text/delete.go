@@ -1,9 +1,11 @@
 package text
 
-func (t *Text) Delete(loc int, n int) bool {
-	if loc <= 0 || loc >= len(t.rr) {
+func (t *Text) Delete(l Location, n int) bool {
+	loc, ok := l.int(len(t.rr))
+	if !ok {
 		return false
 	}
+
 	if loc < n {
 		n = loc
 	}

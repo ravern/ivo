@@ -8,7 +8,7 @@ import (
 
 func TestText_Insert(t *testing.T) {
 	tests := []struct {
-		loc  int
+		loc  text.Location
 		s    string
 		want string
 	}{
@@ -26,6 +26,11 @@ func TestText_Insert(t *testing.T) {
 			loc:  -1,
 			s:    "invalid",
 			want: "Hello world! This is some sample text for the testing package for text.",
+		},
+		{
+			loc:  0,
+			s:    "Some frontmatter. ",
+			want: "Some frontmatter. Hello world! This is some sample text for the testing package for text.",
 		},
 	}
 

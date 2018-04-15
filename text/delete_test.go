@@ -8,7 +8,7 @@ import (
 
 func TestText_Delete(t *testing.T) {
 	tests := []struct {
-		loc  int
+		loc  text.Location
 		n    int
 		want string
 	}{
@@ -25,6 +25,11 @@ func TestText_Delete(t *testing.T) {
 		{
 			loc:  -1,
 			n:    4238478947,
+			want: "Hello world! This is some sample text for the testing package for text.",
+		},
+		{
+			loc:  0,
+			n:    2748923473,
 			want: "Hello world! This is some sample text for the testing package for text.",
 		},
 	}
