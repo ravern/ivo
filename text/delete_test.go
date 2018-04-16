@@ -44,3 +44,37 @@ func TestText_Delete(t *testing.T) {
 		}
 	}
 }
+
+func TestText_DeleteMultiple(t *testing.T) {
+	tests := []struct {
+		locs []text.Location
+		n    int
+		want string
+	}{
+		{
+			locs: []text.Location{5, 25},
+			n:    5,
+			want: " world! This is sample text for the testing package for text.",
+		},
+		{
+			locs: []text.Location{49, 22},
+			n:    10,
+			want: "Hello world!ome sample text fting package for text.",
+		},
+		{
+			locs: []text.Location{-1, 2, 20},
+			n:    10,
+			want: "llo worl some sample text for the testing package for text.",
+		},
+	}
+
+	for i, test := range tests {
+		txt := text.New(textStr)
+		txt.DeleteMultiple(test.locs, test.n)
+		got := txt.String()
+
+		if test.want != got {
+			t.Errorf("test %d: wanted %s got %s", i, test.want, got)
+		}
+	}
+}

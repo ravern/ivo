@@ -19,15 +19,13 @@ func (t *Text) InsertMultiple(ll []Location, s string) bool {
 	sort.Sort(locationSlice(ll))
 
 	var (
-		fails   int
+		offset  int
 		success bool
 	)
-	for i, l := range ll {
-		offset := (i - fails) * len(s)
-		if !t.Insert(Location(int(l)+offset), s) {
-			fails++
-		} else {
+	for _, l := range ll {
+		if t.Insert(Location(int(l)+offset), s) {
 			success = true
+			offset += len(s)
 		}
 	}
 	return success
