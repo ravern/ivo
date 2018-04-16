@@ -17,3 +17,9 @@ func (t *Text) Len() int {
 func (t *Text) String() string {
 	return string(t.rr)
 }
+
+func (t *Text) check(l Location) {
+	if int(l) < 0 || int(l) >= len(t.rr) {
+		panic("runtime error: index out of bounds")
+	}
+}
