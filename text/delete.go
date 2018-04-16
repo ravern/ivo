@@ -2,6 +2,8 @@ package text
 
 import "sort"
 
+// Delete deletes n number of runes before the Location provided or
+// up to the start of Text if n is larger than the Location.
 func (t *Text) Delete(l Location, n int) {
 	t.check(l)
 
@@ -11,6 +13,8 @@ func (t *Text) Delete(l Location, n int) {
 	t.rr = append(t.rr[:int(l)-n], t.rr[int(l):]...)
 }
 
+// DeleteMultiple performs the deletes at multiple Locations, taking
+// into account the offset as a result of previous deletions.
 func (t *Text) DeleteMultiple(ll []Location, n int) {
 	sort.Sort(locationSlice(ll))
 

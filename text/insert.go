@@ -4,6 +4,7 @@ import (
 	"sort"
 )
 
+// Insert inserts the given string after the Location provided.
 func (t *Text) Insert(l Location, s string) {
 	t.check(l)
 
@@ -11,6 +12,8 @@ func (t *Text) Insert(l Location, s string) {
 	t.rr = append(t.rr[:int(l)], tmp...)
 }
 
+// InsertMultiple performs the inserts at multiple Locations, taking
+// into account the offset as a result of previous insertions.
 func (t *Text) InsertMultiple(ll []Location, s string) {
 	sort.Sort(locationSlice(ll))
 
