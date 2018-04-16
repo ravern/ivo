@@ -4,29 +4,17 @@ import (
 	"sort"
 )
 
-func (t *Text) Insert(l Location, s string) bool {
-	loc, ok := l.int(len(t.rr))
-	if !ok {
-		return false
-	}
-
-	tmp := append([]rune(s), t.rr[loc:]...)
-	t.rr = append(t.rr[:loc], tmp...)
-	return true
+func (t *Text) Insert(l Location, s string) {
+	tmp := append([]rune(s), t.rr[int(l):]...)
+	t.rr = append(t.rr[:int(l)], tmp...)
 }
 
-func (t *Text) InsertMultiple(ll []Location, s string) bool {
+func (t *Text) InsertMultiple(ll []Location, s string) {
 	sort.Sort(locationSlice(ll))
-
-	var (
-		offset  int
-		success bool
-	)
+	var offset int
 	for _, l := range ll {
-		if t.Insert(Location(int(l)+offset), s) {
-			success = true
-			offset += len(s)
-		}
+		org := len(t.rr)
+		t.Insert(Location(int(l)+offset), s)
+		offset += len(t.rr) - org
 	}
-	return success
 }

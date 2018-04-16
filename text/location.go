@@ -7,14 +7,6 @@ type Region struct {
 	End   Location
 }
 
-func (l Location) int(max int) (int, bool) {
-	loc := int(l)
-	if loc < 0 || loc >= max {
-		return 0, false
-	}
-	return loc, true
-}
-
 type locationSlice []Location
 
 func (l locationSlice) Len() int {

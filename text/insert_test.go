@@ -23,11 +23,6 @@ func TestText_Insert(t *testing.T) {
 			want: "Hello world! This is only some sample text for the testing package for text.",
 		},
 		{
-			loc:  -1,
-			s:    "invalid",
-			want: "Hello world! This is some sample text for the testing package for text.",
-		},
-		{
 			loc:  0,
 			s:    "Some frontmatter. ",
 			want: "Some frontmatter. Hello world! This is some sample text for the testing package for text.",
@@ -60,11 +55,6 @@ func TestText_InsertMultiple(t *testing.T) {
 			locs: []text.Location{20, 70, 41},
 			s:    " only",
 			want: "Hello world! This is only some sample text for only the testing package for text only.",
-		},
-		{
-			locs: []text.Location{-1},
-			s:    "invalid",
-			want: "Hello world! This is some sample text for the testing package for text.",
 		},
 		{
 			locs: []text.Location{0},

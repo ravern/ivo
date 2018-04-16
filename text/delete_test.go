@@ -23,11 +23,6 @@ func TestText_Delete(t *testing.T) {
 			want: "Hello worl some sample text for the testing package for text.",
 		},
 		{
-			loc:  -1,
-			n:    4238478947,
-			want: "Hello world! This is some sample text for the testing package for text.",
-		},
-		{
 			loc:  0,
 			n:    2748923473,
 			want: "Hello world! This is some sample text for the testing package for text.",
@@ -62,7 +57,7 @@ func TestText_DeleteMultiple(t *testing.T) {
 			want: "Hello world!ome sample text fting package for text.",
 		},
 		{
-			locs: []text.Location{-1, 2, 20},
+			locs: []text.Location{2, 20},
 			n:    10,
 			want: "llo worl some sample text for the testing package for text.",
 		},
