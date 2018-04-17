@@ -1,6 +1,8 @@
 package key
 
-import "ivoeditor.com/ivo"
+import (
+	"ivoeditor.com/ivo"
+)
 
 // Map is a map of keys to actions, with support for modes.
 type Map struct {
@@ -13,7 +15,7 @@ type node struct {
 	action   func(ivo.Context)
 }
 
-// NewMap creates an empty map.
+// NewMap creates an empty key map.
 func NewMap() *Map {
 	return &Map{
 		modes: make(map[string]*node),
@@ -50,7 +52,7 @@ func (m *Map) Get(mode string, kk []ivo.Key) (func(ivo.Context), bool, bool) {
 	return node.action, len(node.children) != 0, true
 }
 
-// mode returns the node for the specified mode, creating it if it
+// mode returns the node for the given mode, creating it if it
 // doesn't exist.
 func (m *Map) mode(mode string) *node {
 	node, ok := m.modes[mode]
