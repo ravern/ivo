@@ -45,6 +45,13 @@ func (mr *Mapper) process() {
 		ctx    ivo.Context
 		action func(ivo.Context)
 	)
+
+	reset := func() {
+		kk = make([]ivo.Key, 0)
+		ctx = nil
+		action = nil
+	}
+
 	for {
 		var k ivo.Key
 
@@ -57,6 +64,8 @@ func (mr *Mapper) process() {
 				if action != nil {
 					action(ctx)
 				}
+				reset()
+				continue
 			}
 		} else {
 			// New key
@@ -68,16 +77,17 @@ func (mr *Mapper) process() {
 		action, more, ok := mr.m.Get(mr.mode, kk)
 
 		if !ok {
-			ctx.Logger().Infof("key: failed to find mapping for %v", kk)
-			kk = make([]ivo.Key, 0)
-			ctx = nil
-			action = nil
+			ctx.Logger().Errorf("key: failed to find mapping for %v", kk)
+			reset()
 			continue
 		}
 		if more {
 			continue
 		}
 
-		action(ctx)
+		if action != nil {
+			action(ctx)
+		}
+		reset()
 	}
 }
