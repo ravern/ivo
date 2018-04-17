@@ -303,6 +303,8 @@ const (
 
 func (kc KeyCode) String() string {
 	switch kc {
+	case KeyCodeRune:
+		return "rune"
 	case KeyCodeF1:
 		return "f1"
 	case KeyCodeF2:
