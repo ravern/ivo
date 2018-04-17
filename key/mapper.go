@@ -7,17 +7,36 @@ import (
 	"ivoeditor.com/ivo"
 )
 
+// Mapper provides state and timeouts for processing keys via Map.
+//
+// Mapper runs its own loop in the background to process incoming
+// key presses. For full use in a ivo.Window, all key events should
+// be forwarded to the Mapper, which will then process and call the
+// actions with the correct ivo.Contexts.
 type Mapper struct {
+	// Timeout is how long before the action of the current key
+	// combination is used, instead of waiting for more keys.
+	//
+	// For example, if the Map contains actions for 'j' and 'jk',
+	// and the key 'j' is processed, the Mapper will then wait for
+	// the duration of Timeout for the 'k' key. After waiting, if the
+	// 'k' key still isn't pressed, the 'j' action will be used.
+	//
+	// The default value of Timeout is 2 seconds.
 	Timeout time.Duration
 
-	m    *Map
-	mode string
+	// Mode is the mode that is used to get keys from Map.
+	//
+	// The default value of mode is an empty string.
+	Mode string
 
+	m    *Map
 	init sync.Once
 	ctxs chan ivo.Context
 	keys chan ivo.Key
 }
 
+// NewMapper creates a new Mapper.
 func NewMapper(m *Map) *Mapper {
 	return &Mapper{
 		Timeout: 2 * time.Second,
@@ -27,10 +46,7 @@ func NewMapper(m *Map) *Mapper {
 	}
 }
 
-func (mr *Mapper) SetMode(mode string) {
-	mr.mode = mode
-}
-
+// Process sends the key to the background loop for processing.
 func (mr *Mapper) Process(ctx ivo.Context, k ivo.Key) {
 	mr.init.Do(func() {
 		go mr.process()
@@ -39,6 +55,7 @@ func (mr *Mapper) Process(ctx ivo.Context, k ivo.Key) {
 	mr.keys <- k
 }
 
+// process is the key event loop.
 func (mr *Mapper) process() {
 	var (
 		kk     []ivo.Key
@@ -74,7 +91,7 @@ func (mr *Mapper) process() {
 		}
 
 		kk = append(kk, k)
-		action, more, ok := mr.m.Get(mr.mode, kk)
+		action, more, ok := mr.m.Get(mr.Mode, kk)
 
 		if !ok {
 			ctx.Logger().Errorf("key: failed to find mapping for %v", kk)

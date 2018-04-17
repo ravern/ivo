@@ -42,7 +42,7 @@ func TestMapper_Process(t *testing.T) {
 
 	for i, test := range tests {
 		mr, tr := newMapper()
-		mr.SetMode(test.mode)
+		mr.Mode = test.mode
 
 		for _, key := range test.keys {
 			mr.Process(mock.NewContext(), key)
