@@ -36,15 +36,34 @@ func (m *Map) Set(mode string, kk []ivo.Key, action func(ivo.Context)) {
 	node.action = action
 }
 
+// SetFallback sets the fallback action for the given mode (See Get).
+func (m *Map) SetFallback(mode string, action func(ivo.Context)) {
+	node := m.mode(mode)
+	node.action = action
+}
+
 // Get returns the action for the given keys, for the specified mode.
+//
+// The first bool is the more flag. It represents whether there are
+// additional key combinations that start with the given keys. The
+// second bool is the ok flag. It represents whether an action exists
+// for the given key combination.
+//
+// If the given mode has a fallback action, and no actions are found
+// for the given key combination, the fallback action will be returned,
+// with the more flag set to false and the ok flag set to true.
 func (m *Map) Get(mode string, kk []ivo.Key) (func(ivo.Context), bool, bool) {
 	node, ok := m.modes[mode]
 	if !ok {
 		return nil, false, false
 	}
+	fallback := node.action
 	for _, k := range kk {
 		child, ok := node.children[k]
 		if !ok {
+			if fallback != nil {
+				return fallback, false, true
+			}
 			return nil, false, false
 		}
 		node = child

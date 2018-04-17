@@ -14,6 +14,7 @@ type tracker struct {
 	normalJAltKL   bool
 	normalMNPgdn   bool
 	rootPQ         bool
+	rootFallback   bool
 }
 
 func newMap() (*key.Map, *tracker) {
@@ -65,6 +66,10 @@ func newMap() (*key.Map, *tracker) {
 		{Code: ivo.KeyCodeRune, Rune: 'q'},
 	}, func(ctx ivo.Context) {
 		t.rootPQ = true
+	})
+
+	m.SetFallback("", func(ivo.Context) {
+		t.rootFallback = true
 	})
 
 	return m, t

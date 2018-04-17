@@ -57,6 +57,16 @@ func TestMap_Get(t *testing.T) {
 			wantMore: true,
 			wantOK:   true,
 		},
+		{
+			mode: "",
+			keys: []ivo.Key{
+				{Code: ivo.KeyCodeRune, Rune: 'x'},
+				{Code: ivo.KeyCodeRune, Rune: 'y'},
+				{Code: ivo.KeyCodeRune, Rune: 'z'},
+			},
+			wantMore: false,
+			wantOK:   true,
+		},
 	}
 
 	for i, test := range tests {
