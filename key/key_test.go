@@ -25,52 +25,52 @@ func newMap() (*key.Map, *tracker) {
 		{Code: ivo.KeyCodeRune, Rune: 'a'},
 		{Code: ivo.KeyCodeRune, Rune: 'b'},
 		{Code: ivo.KeyCodeRune, Rune: 'c'},
-	}, func(ctx ivo.Context) {
+	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.insertABC = true
-	})
+	}))
 
 	m.Set("insert", []ivo.Key{
 		{Code: ivo.KeyCodeRune, Rune: 'd'},
 		{Code: ivo.KeyCodeEnter},
-	}, func(ctx ivo.Context) {
+	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.insertDEnter = true
-	})
+	}))
 
 	m.Set("insert", []ivo.Key{
 		{Code: ivo.KeyCodeRune, Rune: 'f'},
 		{Code: ivo.KeyCodeRune, Rune: 'g'},
 		{Code: ivo.KeyCodeRune, Rune: 'h', Mod: ivo.KeyModCtrl},
 		{Code: ivo.KeyCodeRune, Rune: 'i'},
-	}, func(ctx ivo.Context) {
+	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.insertFGCtrlHI = true
-	})
+	}))
 
 	m.Set("normal", []ivo.Key{
 		{Code: ivo.KeyCodeRune, Rune: 'j'},
 		{Code: ivo.KeyCodeEnter, Rune: 'k', Mod: ivo.KeyModAlt},
 		{Code: ivo.KeyCodeRune, Rune: 'l'},
-	}, func(ctx ivo.Context) {
+	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.normalJAltKL = true
-	})
+	}))
 
 	m.Set("normal", []ivo.Key{
 		{Code: ivo.KeyCodeRune, Rune: 'm'},
 		{Code: ivo.KeyCodeRune, Rune: 'n'},
 		{Code: ivo.KeyCodePgdn},
-	}, func(ctx ivo.Context) {
+	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.normalMNPgdn = true
-	})
+	}))
 
 	m.Set("", []ivo.Key{
 		{Code: ivo.KeyCodeRune, Rune: 'p'},
 		{Code: ivo.KeyCodeRune, Rune: 'q'},
-	}, func(ctx ivo.Context) {
+	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.rootPQ = true
-	})
+	}))
 
-	m.SetFallback("", func(ivo.Context) {
+	m.SetFallback("", key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.rootFallback = true
-	})
+	}))
 
 	return m, t
 }

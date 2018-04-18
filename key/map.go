@@ -4,15 +4,15 @@ import (
 	"ivoeditor.com/ivo"
 )
 
-// Map is a map of keys to actions, with support for modes.
+// Map is a map of keys to handlers, with support for modes.
 type Map struct {
 	modes map[string]*node
 }
 
-// node forms an action tree with other nodes.
+// node forms an handler tree with other nodes.
 type node struct {
 	children map[ivo.Key]*node
-	action   func(ivo.Context)
+	handler  Handler
 }
 
 // NewMap creates an empty key map.
@@ -22,8 +22,9 @@ func NewMap() *Map {
 	}
 }
 
-// Set sets the action for the given keys, for the specified mode.
-func (m *Map) Set(mode string, kk []ivo.Key, action func(ivo.Context)) {
+// Set sets the handler for the given key combination, for the specified
+// mode.
+func (m *Map) Set(mode string, kk []ivo.Key, handler Handler) {
 	node := m.mode(mode)
 	for _, k := range kk {
 		child, ok := node.children[k]
@@ -33,42 +34,40 @@ func (m *Map) Set(mode string, kk []ivo.Key, action func(ivo.Context)) {
 		}
 		node = child
 	}
-	node.action = action
+	node.handler = handler
 }
 
-// SetFallback sets the fallback action for the given mode (See Get).
-func (m *Map) SetFallback(mode string, action func(ivo.Context)) {
+// SetFallback sets the fallback handler for the given mode (See Get).
+func (m *Map) SetFallback(mode string, handler Handler) {
 	node := m.mode(mode)
-	node.action = action
+	node.handler = handler
 }
 
-// Get returns the action for the given keys, for the specified mode.
+// Get returns the handler for the given key combination, for the specified
+// mode.
 //
 // The first bool is the more flag. It represents whether there are
 // additional key combinations that start with the given keys. The
-// second bool is the ok flag. It represents whether an action exists
+// second bool is the ok flag. It represents whether a handler exists
 // for the given key combination.
 //
-// If the given mode has a fallback action, and no actions are found
-// for the given key combination, the fallback action will be returned,
+// If the given mode has a fallback handler, and no actions are found
+// for the given key combination, the fallback handler will be returned,
 // with the more flag set to false and the ok flag set to true.
-func (m *Map) Get(mode string, kk []ivo.Key) (func(ivo.Context), bool, bool) {
+func (m *Map) Get(mode string, kk []ivo.Key) (Handler, bool, bool) {
 	node, ok := m.modes[mode]
 	if !ok {
 		return nil, false, false
 	}
-	fallback := node.action
+	fallback := node.handler
 	for _, k := range kk {
 		child, ok := node.children[k]
 		if !ok {
-			if fallback != nil {
-				return fallback, false, true
-			}
-			return nil, false, false
+			return fallback, false, true
 		}
 		node = child
 	}
-	return node.action, len(node.children) != 0, true
+	return node.handler, len(node.children) != 0, true
 }
 
 // mode returns the node for the given mode, creating it if it

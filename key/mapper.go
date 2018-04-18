@@ -12,15 +12,15 @@ import (
 // Mapper runs its own loop in the background to process incoming
 // key presses. For full use in a ivo.Window, all key events should
 // be forwarded to the Mapper, which will then process and call the
-// actions with the correct ivo.Contexts.
+// handlers with the correct ivo.Contexts.
 type Mapper struct {
-	// Timeout is how long before the action of the current key
+	// Timeout is how long before the handler of the current key
 	// combination is used, instead of waiting for more keys.
 	//
-	// For example, if the Map contains actions for 'j' and 'jk',
+	// For example, if the Map contains handler for 'j' and 'jk',
 	// and the key 'j' is processed, the Mapper will then wait for
 	// the duration of Timeout for the 'k' key. After waiting, if the
-	// 'k' key still isn't pressed, the 'j' action will be used.
+	// 'k' key still isn't pressed, the 'j' handler will be used.
 	//
 	// The default value of Timeout is 2 seconds.
 	Timeout time.Duration
@@ -58,15 +58,15 @@ func (mr *Mapper) Process(ctx ivo.Context, k ivo.Key) {
 // process is the key event loop.
 func (mr *Mapper) process() {
 	var (
-		kk     []ivo.Key
-		ctx    ivo.Context
-		action func(ivo.Context)
+		kk      []ivo.Key
+		ctx     ivo.Context
+		handler Handler
 	)
 
 	reset := func() {
 		kk = make([]ivo.Key, 0)
 		ctx = nil
-		action = nil
+		handler = nil
 	}
 
 	for {
@@ -78,8 +78,8 @@ func (mr *Mapper) process() {
 			case ctx = <-mr.ctxs:
 				k = <-mr.keys
 			case <-time.After(mr.Timeout):
-				if action != nil {
-					action(ctx)
+				if handler != nil {
+					handler.Handle(ctx, kk)
 				}
 				reset()
 				continue
@@ -91,7 +91,7 @@ func (mr *Mapper) process() {
 		}
 
 		kk = append(kk, k)
-		action, more, ok := mr.m.Get(mr.Mode, kk)
+		handler, more, ok := mr.m.Get(mr.Mode, kk)
 
 		if !ok {
 			ctx.Logger().Errorf("key: failed to find mapping for %v", kk)
@@ -102,8 +102,8 @@ func (mr *Mapper) process() {
 			continue
 		}
 
-		if action != nil {
-			action(ctx)
+		if handler != nil {
+			handler.Handle(ctx, kk)
 		}
 		reset()
 	}
