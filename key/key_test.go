@@ -22,48 +22,48 @@ func newMap() (*key.Map, *tracker) {
 	m := key.NewMap()
 
 	m.Set("insert", []ivo.Key{
-		{Code: ivo.KeyCodeRune, Rune: 'a'},
-		{Code: ivo.KeyCodeRune, Rune: 'b'},
-		{Code: ivo.KeyCodeRune, Rune: 'c'},
+		{Rune: 'a'},
+		{Rune: 'b'},
+		{Rune: 'c'},
 	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.insertABC = true
 	}))
 
 	m.Set("insert", []ivo.Key{
-		{Code: ivo.KeyCodeRune, Rune: 'd'},
+		{Rune: 'd'},
 		{Code: ivo.KeyCodeEnter},
 	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.insertDEnter = true
 	}))
 
 	m.Set("insert", []ivo.Key{
-		{Code: ivo.KeyCodeRune, Rune: 'f'},
-		{Code: ivo.KeyCodeRune, Rune: 'g'},
-		{Code: ivo.KeyCodeRune, Rune: 'h', Mod: ivo.KeyModCtrl},
-		{Code: ivo.KeyCodeRune, Rune: 'i'},
+		{Rune: 'f'},
+		{Rune: 'g'},
+		{Rune: 'h', Mod: ivo.KeyModCtrl},
+		{Rune: 'i'},
 	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.insertFGCtrlHI = true
 	}))
 
 	m.Set("normal", []ivo.Key{
-		{Code: ivo.KeyCodeRune, Rune: 'j'},
-		{Code: ivo.KeyCodeEnter, Rune: 'k', Mod: ivo.KeyModAlt},
-		{Code: ivo.KeyCodeRune, Rune: 'l'},
+		{Rune: 'j'},
+		{Rune: 'k', Mod: ivo.KeyModAlt},
+		{Rune: 'l'},
 	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.normalJAltKL = true
 	}))
 
 	m.Set("normal", []ivo.Key{
-		{Code: ivo.KeyCodeRune, Rune: 'm'},
-		{Code: ivo.KeyCodeRune, Rune: 'n'},
+		{Rune: 'm'},
+		{Rune: 'n'},
 		{Code: ivo.KeyCodePgdn},
 	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.normalMNPgdn = true
 	}))
 
 	m.Set("", []ivo.Key{
-		{Code: ivo.KeyCodeRune, Rune: 'p'},
-		{Code: ivo.KeyCodeRune, Rune: 'q'},
+		{Rune: 'p'},
+		{Rune: 'q'},
 	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
 		t.rootPQ = true
 	}))

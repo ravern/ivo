@@ -18,9 +18,9 @@ func TestMapper_Process(t *testing.T) {
 		{
 			mode: "insert",
 			keys: []ivo.Key{
-				{Code: ivo.KeyCodeRune, Rune: 'a'},
-				{Code: ivo.KeyCodeRune, Rune: 'b'},
-				{Code: ivo.KeyCodeRune, Rune: 'c'},
+				{Rune: 'a'},
+				{Rune: 'b'},
+				{Rune: 'c'},
 			},
 			interval: time.Millisecond,
 			check: func(t *tracker) bool {
@@ -30,7 +30,7 @@ func TestMapper_Process(t *testing.T) {
 		{
 			mode: "insert",
 			keys: []ivo.Key{
-				{Code: ivo.KeyCodeRune, Rune: 'd'},
+				{Rune: 'd'},
 				{Code: ivo.KeyCodeEnter},
 			},
 			interval: 200 * time.Millisecond,

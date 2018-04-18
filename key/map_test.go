@@ -16,9 +16,9 @@ func TestMap_Get(t *testing.T) {
 		{
 			mode: "insert",
 			keys: []ivo.Key{
-				{Code: ivo.KeyCodeRune, Rune: 'a'},
-				{Code: ivo.KeyCodeRune, Rune: 'b'},
-				{Code: ivo.KeyCodeRune, Rune: 'c'},
+				{Rune: 'a'},
+				{Rune: 'b'},
+				{Rune: 'c'},
 			},
 			wantMore: false,
 			wantOK:   true,
@@ -26,7 +26,7 @@ func TestMap_Get(t *testing.T) {
 		{
 			mode: "insert",
 			keys: []ivo.Key{
-				{Code: ivo.KeyCodeRune, Rune: 'a'},
+				{Rune: 'a'},
 			},
 			wantMore: true,
 			wantOK:   true,
@@ -34,7 +34,7 @@ func TestMap_Get(t *testing.T) {
 		{
 			mode: "insert",
 			keys: []ivo.Key{
-				{Code: ivo.KeyCodeRune, Rune: 'd'},
+				{Rune: 'd'},
 			},
 			wantMore: true,
 			wantOK:   true,
@@ -42,7 +42,7 @@ func TestMap_Get(t *testing.T) {
 		{
 			mode: "insert",
 			keys: []ivo.Key{
-				{Code: ivo.KeyCodeRune, Rune: 'd'},
+				{Rune: 'd'},
 				{Code: ivo.KeyCodeEnter},
 			},
 			wantMore: false,
@@ -51,8 +51,8 @@ func TestMap_Get(t *testing.T) {
 		{
 			mode: "normal",
 			keys: []ivo.Key{
-				{Code: ivo.KeyCodeRune, Rune: 'm'},
-				{Code: ivo.KeyCodeRune, Rune: 'n'},
+				{Rune: 'm'},
+				{Rune: 'n'},
 			},
 			wantMore: true,
 			wantOK:   true,
@@ -60,9 +60,9 @@ func TestMap_Get(t *testing.T) {
 		{
 			mode: "",
 			keys: []ivo.Key{
-				{Code: ivo.KeyCodeRune, Rune: 'x'},
-				{Code: ivo.KeyCodeRune, Rune: 'y'},
-				{Code: ivo.KeyCodeRune, Rune: 'z'},
+				{Rune: 'x'},
+				{Rune: 'y'},
+				{Rune: 'z'},
 			},
 			wantMore: false,
 			wantOK:   true,
