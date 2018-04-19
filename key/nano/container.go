@@ -28,34 +28,34 @@ func NewContainerMapper(h ContainerHandler) *key.Mapper {
 	m := key.NewMap()
 
 	// Forward mode
-	m.SetFallback(ContainerForwardMode, key.HandlerFunc(h.Forward))
+	m.SetFallback(ContainerForwardMode, key.Handler(h.Forward))
 
 	m.Set(ContainerForwardMode, []ivo.Key{
 		{Rune: 'g', Mod: ivo.KeyModCtrl},
-	}, key.HandlerFunc(h.Help))
+	}, key.Handler(h.Help))
 
 	m.Set(ContainerForwardMode, []ivo.Key{
 		{Rune: 'w', Mod: ivo.KeyModCtrl},
-	}, key.HandlerFunc(h.Search))
+	}, key.Handler(h.Search))
 
 	m.Set(ContainerForwardMode, []ivo.Key{
 		{Rune: 'x', Mod: ivo.KeyModCtrl},
-	}, key.HandlerFunc(h.Quit))
+	}, key.Handler(h.Quit))
 
 	m.Set(ContainerForwardMode, []ivo.Key{
 		{Rune: 'o', Mod: ivo.KeyModCtrl},
-	}, key.HandlerFunc(h.Write))
+	}, key.Handler(h.Write))
 
 	// Command mode
-	m.SetFallback(ContainerCommandMode, key.HandlerFunc(h.Raw))
+	m.SetFallback(ContainerCommandMode, key.Handler(h.Raw))
 
 	m.Set(ContainerCommandMode, []ivo.Key{
 		{Code: ivo.KeyCodeEnter},
-	}, key.HandlerFunc(h.Confirm))
+	}, key.Handler(h.Confirm))
 
 	m.Set(ContainerCommandMode, []ivo.Key{
 		{Rune: 'c', Mod: ivo.KeyModCtrl},
-	}, key.HandlerFunc(h.Cancel))
+	}, key.Handler(h.Cancel))
 
 	return key.NewMapper(m)
 }

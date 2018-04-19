@@ -9,6 +9,10 @@ type Map struct {
 	modes map[string]*node
 }
 
+// Handler represents a key handler that handles a successful key
+// combination.
+type Handler func(ivo.Context, []ivo.Key)
+
 // node forms an handler tree with other nodes.
 type node struct {
 	children map[ivo.Key]*node

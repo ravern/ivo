@@ -25,14 +25,14 @@ func newMap() (*key.Map, *tracker) {
 		{Rune: 'a'},
 		{Rune: 'b'},
 		{Rune: 'c'},
-	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
+	}, key.Handler(func(ctx ivo.Context, kk []ivo.Key) {
 		t.insertABC = true
 	}))
 
 	m.Set("insert", []ivo.Key{
 		{Rune: 'd'},
 		{Code: ivo.KeyCodeEnter},
-	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
+	}, key.Handler(func(ctx ivo.Context, kk []ivo.Key) {
 		t.insertDEnter = true
 	}))
 
@@ -41,7 +41,7 @@ func newMap() (*key.Map, *tracker) {
 		{Rune: 'g'},
 		{Rune: 'h', Mod: ivo.KeyModCtrl},
 		{Rune: 'i'},
-	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
+	}, key.Handler(func(ctx ivo.Context, kk []ivo.Key) {
 		t.insertFGCtrlHI = true
 	}))
 
@@ -49,7 +49,7 @@ func newMap() (*key.Map, *tracker) {
 		{Rune: 'j'},
 		{Rune: 'k', Mod: ivo.KeyModAlt},
 		{Rune: 'l'},
-	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
+	}, key.Handler(func(ctx ivo.Context, kk []ivo.Key) {
 		t.normalJAltKL = true
 	}))
 
@@ -57,18 +57,18 @@ func newMap() (*key.Map, *tracker) {
 		{Rune: 'm'},
 		{Rune: 'n'},
 		{Code: ivo.KeyCodePgdn},
-	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
+	}, key.Handler(func(ctx ivo.Context, kk []ivo.Key) {
 		t.normalMNPgdn = true
 	}))
 
 	m.Set("", []ivo.Key{
 		{Rune: 'p'},
 		{Rune: 'q'},
-	}, key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
+	}, key.Handler(func(ctx ivo.Context, kk []ivo.Key) {
 		t.rootPQ = true
 	}))
 
-	m.SetFallback("", key.HandlerFunc(func(ctx ivo.Context, kk []ivo.Key) {
+	m.SetFallback("", key.Handler(func(ctx ivo.Context, kk []ivo.Key) {
 		t.rootFallback = true
 	}))
 

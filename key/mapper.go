@@ -79,7 +79,7 @@ func (mr *Mapper) process() {
 				k = <-mr.keys
 			case <-time.After(mr.Timeout):
 				if handler != nil {
-					handler.Handle(ctx, kk)
+					handler(ctx, kk)
 				}
 				reset()
 				continue
@@ -103,7 +103,7 @@ func (mr *Mapper) process() {
 		}
 
 		if handler != nil {
-			handler.Handle(ctx, kk)
+			handler(ctx, kk)
 		}
 		reset()
 	}
