@@ -3,7 +3,6 @@ package nano
 import (
 	"ivoeditor.com/ivo"
 	"ivoeditor.com/ivo/key"
-	"ivoeditor.com/ivo/key/handler"
 )
 
 // Modes used in the editor.
@@ -13,8 +12,8 @@ const (
 
 // EditorHandler provides actions related to the editor.
 type EditorHandler interface {
-	handler.Cursor
-	handler.Text
+	key.CursorHandler
+	key.TextHandler
 }
 
 // NewEditorMapper creates a new key.Mapper for the editor.
