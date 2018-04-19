@@ -22,31 +22,31 @@ func NewEditorMapper(h EditorHandler) *key.Mapper {
 	m := key.NewMap()
 
 	// Root mode
-	m.SetFallback(EditorMode, key.Handler(h.Raw))
+	m.SetFallback(EditorMode, h.Raw)
 
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowLeft},
-	}, key.Handler(h.Prev))
+	}, h.Prev)
 
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowRight},
-	}, key.Handler(h.Next))
+	}, h.Next)
 
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowUp},
-	}, key.Handler(h.PrevLine))
+	}, h.PrevLine)
 
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowDown},
-	}, key.Handler(h.NextLine))
+	}, h.NextLine)
 
 	m.Set(EditorMode, []ivo.Key{
 		{Rune: 'k', Mod: ivo.KeyModCtrl},
-	}, key.Handler(h.Cut))
+	}, h.Cut)
 
 	m.Set(EditorMode, []ivo.Key{
 		{Rune: 'u', Mod: ivo.KeyModCtrl},
-	}, key.Handler(h.Paste))
+	}, h.Paste)
 
 	return key.NewMapper(m)
 }

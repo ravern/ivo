@@ -9,14 +9,10 @@ type Map struct {
 	modes map[string]*node
 }
 
-// Handler represents a key handler that handles a successful key
-// combination.
-type Handler func(ivo.Context, []ivo.Key)
-
 // node forms an handler tree with other nodes.
 type node struct {
 	children map[ivo.Key]*node
-	handler  Handler
+	handler  func(ivo.Context, []ivo.Key)
 }
 
 // NewMap creates an empty key map.
@@ -28,7 +24,7 @@ func NewMap() *Map {
 
 // Set sets the handler for the given key combination, for the specified
 // mode.
-func (m *Map) Set(mode string, kk []ivo.Key, handler Handler) {
+func (m *Map) Set(mode string, kk []ivo.Key, handler func(ivo.Context, []ivo.Key)) {
 	node := m.mode(mode)
 	for _, k := range kk {
 		child, ok := node.children[k]
@@ -42,7 +38,7 @@ func (m *Map) Set(mode string, kk []ivo.Key, handler Handler) {
 }
 
 // SetFallback sets the fallback handler for the given mode (See Get).
-func (m *Map) SetFallback(mode string, handler Handler) {
+func (m *Map) SetFallback(mode string, handler func(ivo.Context, []ivo.Key)) {
 	node := m.mode(mode)
 	node.handler = handler
 }
@@ -58,7 +54,7 @@ func (m *Map) SetFallback(mode string, handler Handler) {
 // If the given mode has a fallback handler, and no actions are found
 // for the given key combination, the fallback handler will be returned,
 // with the more flag set to false and the ok flag set to true.
-func (m *Map) Get(mode string, kk []ivo.Key) (Handler, bool, bool) {
+func (m *Map) Get(mode string, kk []ivo.Key) (func(ivo.Context, []ivo.Key), bool, bool) {
 	node, ok := m.modes[mode]
 	if !ok {
 		return nil, false, false

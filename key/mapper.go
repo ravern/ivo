@@ -60,7 +60,7 @@ func (mr *Mapper) process() {
 	var (
 		kk      []ivo.Key
 		ctx     ivo.Context
-		handler Handler
+		handler func(ivo.Context, []ivo.Key)
 	)
 
 	reset := func() {

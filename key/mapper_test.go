@@ -5,8 +5,16 @@ import (
 	"time"
 
 	"ivoeditor.com/ivo"
+	"ivoeditor.com/ivo/key"
 	"ivoeditor.com/ivo/mock"
 )
+
+func newMapper() (*key.Mapper, *tracker) {
+	m, t := newMap()
+	mr := key.NewMapper(m)
+	mr.Timeout = 100 * time.Millisecond
+	return mr, t
+}
 
 func TestMapper_Process(t *testing.T) {
 	tests := []struct {
