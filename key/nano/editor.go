@@ -16,6 +16,8 @@ type EditorHandler interface {
 	NextLine(ivo.Context, []ivo.Key)
 	Prev(ivo.Context, []ivo.Key)
 	PrevLine(ivo.Context, []ivo.Key)
+	Cut(ivo.Context, []ivo.Key)
+	Paste(ivo.Context, []ivo.Key)
 	Raw(ivo.Context, []ivo.Key)
 }
 
@@ -27,6 +29,8 @@ func NewEditorMapper(h EditorHandler) *key.Mapper {
 	m.Set(EditorMode, []ivo.Key{{Code: ivo.KeyCodeArrowRight}}, key.HandlerFunc(h.Next))
 	m.Set(EditorMode, []ivo.Key{{Code: ivo.KeyCodeArrowUp}}, key.HandlerFunc(h.PrevLine))
 	m.Set(EditorMode, []ivo.Key{{Code: ivo.KeyCodeArrowDown}}, key.HandlerFunc(h.NextLine))
+	m.Set(EditorMode, []ivo.Key{{Rune: 'k', Mod: ivo.KeyModCtrl}}, key.HandlerFunc(h.Cut))
+	m.Set(EditorMode, []ivo.Key{{Rune: 'u', Mod: ivo.KeyModCtrl}}, key.HandlerFunc(h.Paste))
 	m.SetFallback(EditorMode, key.HandlerFunc(h.Raw))
 
 	return key.NewMapper(m)
