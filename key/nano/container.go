@@ -3,6 +3,7 @@ package nano
 import (
 	"ivoeditor.com/ivo"
 	"ivoeditor.com/ivo/key"
+	"ivoeditor.com/ivo/key/handler"
 )
 
 // Modes used in the container.
@@ -13,15 +14,13 @@ const (
 
 // ContainerHandler provides actions related to the container.
 type ContainerHandler interface {
+	handler.Proxy
+	handler.Prompt
+
 	Help(ivo.Context, []ivo.Key)
 	Search(ivo.Context, []ivo.Key)
 	Quit(ivo.Context, []ivo.Key)
 	Write(ivo.Context, []ivo.Key)
-	Forward(ivo.Context, []ivo.Key)
-
-	Confirm(ivo.Context, []ivo.Key)
-	Cancel(ivo.Context, []ivo.Key)
-	Raw(ivo.Context, []ivo.Key)
 }
 
 // NewContainerMapper creates a new key.Mapper for the container.
