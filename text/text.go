@@ -1,5 +1,7 @@
 package text
 
+import "strings"
+
 // Text is some text, stored internally as a rune slice.
 //
 // The operations on Text will panic with an out of bounds message
@@ -22,9 +24,27 @@ func (t *Text) Len() int {
 	return len(t.rr)
 }
 
-// String returns the value of the text as a string.
+// String returns the value of the text.
 func (t *Text) String() string {
 	return string(t.rr)
+}
+
+// RegionString returns the value of a region of the text.
+func (t *Text) RegionString(r Region) string {
+	t.check(r.Start)
+	t.check(r.End)
+	return string(t.rr[r.Start:r.End])
+}
+
+// Lines returns the value of the text, split into lines.
+func (t *Text) Lines() []string {
+	return strings.Split(t.String(), "\n")
+}
+
+// RegionLines returns the value of a region of the text, split into
+// lines.
+func (t *Text) RegionLines(r Region) []string {
+	return strings.Split(t.RegionString(r), "\n")
 }
 
 // check checks whether the Location provided is within the bounds.

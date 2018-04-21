@@ -8,55 +8,30 @@ import (
 
 func TestText_Next(t *testing.T) {
 	tests := []struct {
+		text string
 		loc  text.Location
 		want text.Location
 	}{
 		{
+			text: "Hello world! This is some sample text for the testing package for text.",
 			loc:  5,
 			want: 6,
 		},
 		{
+			text: "Hello world! This is some sample text for the testing package for text.",
 			loc:  70,
 			want: 70,
 		},
 		{
+			text: "Hello world! This is some sample text for the testing package for text.",
 			loc:  30,
 			want: 31,
 		},
 	}
 
 	for i, test := range tests {
-		txt := text.New(textStr)
+		txt := text.New(test.text)
 		got := txt.Next(test.loc)
-
-		if test.want != got {
-			t.Errorf("test %d: wanted %d got %d", i, test.want, got)
-		}
-	}
-}
-
-func TestText_Prev(t *testing.T) {
-	tests := []struct {
-		loc  text.Location
-		want text.Location
-	}{
-		{
-			loc:  5,
-			want: 4,
-		},
-		{
-			loc:  70,
-			want: 69,
-		},
-		{
-			loc:  0,
-			want: 0,
-		},
-	}
-
-	for i, test := range tests {
-		txt := text.New(textStr)
-		got := txt.Prev(test.loc)
 
 		if test.want != got {
 			t.Errorf("test %d: wanted %d got %d", i, test.want, got)
