@@ -15,24 +15,27 @@ type Text struct {
 // New creates a new Text containing the string value provided.
 func New(s string) *Text {
 	return &Text{
-		rr: []rune(s),
+		rr: append([]rune(s), 0),
 	}
 }
 
 // Len returns the length of the text.
 func (t *Text) Len() int {
-	return len(t.rr)
+	return len(t.rr) - 1
 }
 
 // String returns the value of the text.
 func (t *Text) String() string {
-	return string(t.rr)
+	return string(t.rr[:len(t.rr)-1])
 }
 
 // RegionString returns the value of a region of the text.
 func (t *Text) RegionString(r Region) string {
 	t.check(r.Start)
 	t.check(r.End)
+	if int(r.End) == len(t.rr)-1 {
+		r.End = Location(len(t.rr) - 2)
+	}
 	return string(t.rr[r.Start:r.End])
 }
 
