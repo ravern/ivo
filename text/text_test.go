@@ -10,9 +10,10 @@ import (
 func TestText_Raw(t *testing.T) {
 	tests := [][]rune{
 		[]rune("Hello world!"),
+		[]rune("This is the first sentence. This is the second."),
 		[]rune("Boom clap sound of my heart"),
 		[]rune("I'm in love with the shape of you"),
-		[]rune("Oh I oh I oh I oh I"),
+		[]rune("Oh I oh I oh I oh I\nOh I oh I oh I oh I"),
 	}
 
 	for i, test := range tests {
