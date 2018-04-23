@@ -3,6 +3,7 @@ package nano
 import (
 	"ivoeditor.com/ivo"
 	"ivoeditor.com/ivo/key"
+	"ivoeditor.com/ivo/key/handler"
 )
 
 // Modes used in the container.
@@ -13,8 +14,8 @@ const (
 
 // ContainerHandler provides actions related to the container.
 type ContainerHandler interface {
-	key.ProxyHandler
-	key.PromptHandler
+	handler.Proxy
+	handler.Prompt
 
 	Help(ivo.Context, []ivo.Key)
 	Search(ivo.Context, []ivo.Key)

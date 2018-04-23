@@ -73,7 +73,6 @@ func (mr *Mapper) process() {
 		var k ivo.Key
 
 		if len(kk) > 0 {
-			// More keys awaiting
 			select {
 			case ctx = <-mr.ctxs:
 				k = <-mr.keys
@@ -85,13 +84,14 @@ func (mr *Mapper) process() {
 				continue
 			}
 		} else {
-			// New key
 			ctx = <-mr.ctxs
 			k = <-mr.keys
 		}
 
 		kk = append(kk, k)
-		handler, more, ok := mr.m.Get(mr.Mode, kk)
+
+		var more, ok bool
+		handler, more, ok = mr.m.Get(mr.Mode, kk)
 
 		if !ok {
 			ctx.Logger().Errorf("key: failed to find mapping for %v", kk)
