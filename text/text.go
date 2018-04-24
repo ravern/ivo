@@ -12,17 +12,20 @@ import (
 // Location is created manually, panics should not occur.
 type Text struct {
 	rr         []rune
-	paragraphs [][][]int
 	lines      []int
+	paragraphs []int
+	sentences  []int
+	words      []int
 }
 
 // NewText creates a new Text containing the raw rune slice provided.
 func NewText(rr []rune) *Text {
-	rr = append(rr, 0)
 	return &Text{
-		rr:         rr,
-		paragraphs: paragraphs(rr),
+		rr:         append(rr, 0),
 		lines:      lines(rr),
+		paragraphs: paragraphs(rr),
+		sentences:  sentences(rr),
+		words:      words(rr),
 	}
 }
 
@@ -79,12 +82,12 @@ func lines(rr []rune) []int {
 //
 // Paragraphs are defined as slices of sentences seperated by more
 // than one '\n' rune.
-func paragraphs(rr []rune) [][][]int {
-	rrr := make([][]rune, 1)
+func paragraphs(rr []rune) []int {
+	ii := make([]int, 1)
 	count := 0
 
 	for _, r := range rr {
-		rrr := deepAppend(rrr, r)
+		ii[len(ii)-1]++
 
 		if whitespace(r) {
 			if r == '\n' {
@@ -94,16 +97,10 @@ func paragraphs(rr []rune) [][][]int {
 		}
 
 		if count > 2 {
-			rrr = append(rrr, make([]rune, 0))
+			ii = append(ii, 0)
 		}
 
 		count = 0
-	}
-
-	ii := make([][][]int, 0)
-
-	for _, rr := range rrr {
-		ii = append(ii, sentences(rr))
 	}
 
 	return ii
@@ -114,28 +111,22 @@ func paragraphs(rr []rune) [][][]int {
 //
 // Sentences are defined as slices of words seperated runes in the
 // set '.;!?'.
-func sentences(rr []rune) [][]int {
-	rrr := make([][]rune, 1)
+func sentences(rr []rune) []int {
+	ii := make([]int, 1)
 	ended := false
 
 	for _, r := range rr {
 		if !whitespace(r) && ended {
-			rrr = append(rrr, make([]rune, 0))
+			ii = append(ii, 0)
 			ended = false
 		}
 
-		rrr = deepAppend(rrr, r)
+		ii[len(ii)-1]++
 
 		if ending(r) {
 			ended = true
 			continue
 		}
-	}
-
-	ii := make([][]int, 0)
-
-	for _, rr := range rrr {
-		ii = append(ii, words(rr))
 	}
 
 	return ii
@@ -146,29 +137,23 @@ func sentences(rr []rune) [][]int {
 //
 // Words are defined as slices of runes seperated by whitespace.
 func words(rr []rune) []int {
-	rrr := make([][]rune, 1)
+	ii := make([]int, 1)
 	ended := false
 
 	for _, r := range rr {
 		whitespace := whitespace(r)
 
 		if !whitespace && ended {
-			rrr = append(rrr, make([]rune, 0))
+			ii = append(ii, 0)
 			ended = false
 		}
 
-		rrr = deepAppend(rrr, r)
+		ii[len(ii)-1]++
 
 		if whitespace {
 			ended = true
 			continue
 		}
-	}
-
-	ii := make([]int, 0)
-
-	for _, rr := range rrr {
-		ii = append(ii, len(rr))
 	}
 
 	return ii
@@ -189,13 +174,4 @@ func ending(r rune) bool {
 		return true
 	}
 	return false
-}
-
-// deepAppend appends the given rune to the last slice of the
-// given rune slice.
-func deepAppend(rrr [][]rune, r rune) [][]rune {
-	rr := rrr[len(rrr)-1]
-	rr = append(rr, r)
-	rrr[len(rrr)-1] = rr
-	return rrr
 }
