@@ -9,7 +9,6 @@ func (t *Text) SelectParagraph(loc Location) Region {
 	if !ok {
 		panic("runtime error: paragraphs index broken")
 	}
-
 	return Region{Begin: Location(begin), End: Location(end)}
 }
 
@@ -22,7 +21,6 @@ func (t *Text) SelectSentence(loc Location) Region {
 	if !ok {
 		panic("runtime error: sentences index broken")
 	}
-
 	return Region{Begin: Location(begin), End: Location(end)}
 }
 
@@ -34,6 +32,5 @@ func (t *Text) SelectWord(loc Location) Region {
 	if !ok {
 		panic("runtime error: words index broken")
 	}
-
 	return Region{Begin: Location(begin), End: Location(end)}
 }

@@ -39,6 +39,7 @@ func (t *Text) Raw() []rune {
 func (t *Text) RegionRaw(reg Region) []rune {
 	t.check(reg.Begin)
 	t.check(reg.End)
+
 	return t.rr[reg.Begin:reg.End]
 }
 
