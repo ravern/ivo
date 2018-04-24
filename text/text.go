@@ -87,6 +87,11 @@ func paragraphs(rr []rune) []int {
 	count := 0
 
 	for _, r := range rr {
+		if count > 1 {
+			ii = append(ii, 0)
+			count = 0
+		}
+
 		ii[len(ii)-1]++
 
 		if whitespace(r) {
@@ -95,12 +100,6 @@ func paragraphs(rr []rune) []int {
 			}
 			continue
 		}
-
-		if count > 2 {
-			ii = append(ii, 0)
-		}
-
-		count = 0
 	}
 
 	return ii
@@ -174,4 +173,16 @@ func ending(r rune) bool {
 		return true
 	}
 	return false
+}
+
+func index(ii []int, idx int) (int, int, bool) {
+	sum := 0
+	for _, i := range ii {
+		sum += i
+		if sum <= int(idx) {
+			continue
+		}
+		return sum - i, sum, true
+	}
+	return 0, 0, false
 }
