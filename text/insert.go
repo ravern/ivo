@@ -25,3 +25,29 @@ func (txt *Text) Insert(loc Location, rr []rune) Location {
 
 	return Location(int(loc) + len(rr))
 }
+
+// InsertMultiple inserts the given rune slice into all the specified
+// Locations within the Text.
+//
+// The given Location slice should be sorted in ascending order. This
+// is important, or the offset will not be tracked properly.
+//
+// InsertMultiple takes into account the offset caused by previous
+// insertions. For example, inserting 'hello' at 0 and 3 will result
+// in 'hhelhlo'.
+func (txt *Text) InsertMultiple(locs []Location, rr []rune) []Location {
+	newLocs := make([]Location, len(locs))
+
+	offset := 0
+	for i, loc := range locs {
+		loc = Location(int(loc) + offset)
+		txt.check(loc)
+
+		newLoc := txt.Insert(loc, rr)
+		newLocs[i] = newLoc
+
+		offset += int(newLoc) - int(loc)
+	}
+
+	return newLocs
+}
