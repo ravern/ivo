@@ -2,8 +2,13 @@ package mock
 
 import "ivoeditor.com/ivo"
 
-// context is an empty, mock context.
+// context is an empty, no-op context.
 type context struct{}
+
+// NewContext creates a new mock context.
+func NewContext() ivo.Context {
+	return &context{}
+}
 
 func (c *context) Logger() ivo.Logger {
 	return NewLogger()
@@ -20,9 +25,4 @@ func (c *context) Buffer() *ivo.Buffer {
 }
 
 func (c *context) Render() {
-}
-
-// NewContext creates a new mock context.
-func NewContext() ivo.Context {
-	return &context{}
 }
