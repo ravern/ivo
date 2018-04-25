@@ -2,35 +2,41 @@ package text
 
 // SelectParagraph returns the Region of the paragraph the Location
 // is on.
-func (t *Text) SelectParagraph(loc Location) Region {
-	t.check(loc)
-
-	begin, end, ok := index(t.paragraphs, int(loc))
-	if !ok {
-		panic("runtime error: paragraphs index broken")
-	}
+func (txt *Text) SelectParagraph(loc Location) Region {
+	txt.check(loc)
+	_, begin, end := index(txt.paragraphs, int(loc))
 	return Region{Begin: Location(begin), End: Location(end)}
+}
+
+// SelectParagraphInner returns the Region of the paragraph the Location
+// is on, excluding the trailing whitespace.
+func (txt *Text) SelectParagraphInner(loc Location) Region {
+	return txt.RemoveTrailingWhitespace(txt.SelectParagraph(loc))
 }
 
 // SelectSentence returns the Region of the sentence the Location is
 // on.
-func (t *Text) SelectSentence(loc Location) Region {
-	t.check(loc)
-
-	begin, end, ok := index(t.sentences, int(loc))
-	if !ok {
-		panic("runtime error: sentences index broken")
-	}
+func (txt *Text) SelectSentence(loc Location) Region {
+	txt.check(loc)
+	_, begin, end := index(txt.sentences, int(loc))
 	return Region{Begin: Location(begin), End: Location(end)}
 }
 
-// SelectWord returns the Region of the word the Location is on.
-func (t *Text) SelectWord(loc Location) Region {
-	t.check(loc)
+// SelectSentenceInner returns the Region of the sentence the Location is
+// on, excluding the trailing whitespace.
+func (txt *Text) SelectSentenceInner(loc Location) Region {
+	return txt.RemoveTrailingWhitespace(txt.SelectSentence(loc))
+}
 
-	begin, end, ok := index(t.words, int(loc))
-	if !ok {
-		panic("runtime error: words index broken")
-	}
+// SelectWord returns the Region of the word the Location is on.
+func (txt *Text) SelectWord(loc Location) Region {
+	txt.check(loc)
+	_, begin, end := index(txt.words, int(loc))
 	return Region{Begin: Location(begin), End: Location(end)}
+}
+
+// SelectWordInner returns the Region of the word the Location is on,
+// excluding the trailing whitespace.
+func (txt *Text) SelectWordInner(loc Location) Region {
+	return txt.RemoveTrailingWhitespace(txt.SelectWord(loc))
 }

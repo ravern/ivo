@@ -9,6 +9,7 @@ import (
 
 func TestText_Raw(t *testing.T) {
 	tests := [][]rune{
+		[]rune{},
 		[]rune("Hello world!"),
 		[]rune("This is the first sentence. This is the second."),
 		[]rune("This is the first paragraph.\n\nThis is the second."),

@@ -29,40 +29,51 @@ func NewText(rr []rune) *Text {
 	}
 }
 
-// Raw returns the raw rune slice contained in Text.
-func (t *Text) Raw() []rune {
-	return t.rr[:len(t.rr)-1]
+// Raw returns the raw rune slice contained in Textxt.
+func (txt *Text) Raw() []rune {
+	return txt.rr[:len(txt.rr)-1]
 }
 
 // RegionRaw returns the raw rune slice contained in Text, within the
 // Region provided.
-func (t *Text) RegionRaw(reg Region) []rune {
-	t.check(reg.Begin)
-	t.check(reg.End)
-	return t.rr[reg.Begin:reg.End]
+func (txt *Text) RegionRaw(reg Region) []rune {
+	txt.check(reg.Begin)
+	txt.check(reg.End)
+
+	return txt.rr[reg.Begin:reg.End]
 }
 
 // Len returns the length of the rune slice.
-func (t *Text) Len() int {
-	return len(t.rr) - 1
+func (txt *Text) Len() int {
+	return len(txt.rr) - 1
+}
+
+// RemoveTrailingWhitespace returns a new Region without the trailing
+// whitespace.
+func (txt *Text) RemoveTrailingWhitespace(reg Region) Region {
+	txt.check(reg.Begin)
+	txt.check(reg.End)
+
+	for i := reg.End - 1; i >= 0; i-- {
+		if !whitespace(txt.rr[i]) {
+			return Region{Begin: reg.Begin, End: Location(i + 1)}
+		}
+	}
+	return Region{Begin: reg.Begin, End: reg.End}
 }
 
 // check checks whether the Location provided is within the bounds.
 //
 // If the Location is within the bounds, nothing will happen. If it
 // isn't, then it will panic with an out of bounds message.
-func (t *Text) check(loc Location) {
-	if int(loc) < 0 || int(loc) >= len(t.rr) {
+func (txt *Text) check(loc Location) {
+	if int(loc) < 0 || int(loc) >= len(txt.rr) {
 		panic("runtime error: index out of bounds")
 	}
 }
 
 // lines splits the rune slice into lines, returning the indices of
 // the first rune in each line.
-//
-// Lines are defined as slices of runes seperated by one '\n' rune.
-// The result includes the '\n' rune at the end of each line (except
-// the last line, which ends in 0.
 func lines(rr []rune) []int {
 	ii := make([]int, 1)
 
@@ -79,9 +90,6 @@ func lines(rr []rune) []int {
 
 // paragraphs splits the rune slice into paragraphs, returning the
 // indices of the sentences.
-//
-// Paragraphs are defined as slices of sentences seperated by more
-// than one '\n' rune.
 func paragraphs(rr []rune) []int {
 	ii := make([]int, 1)
 	count := 0
@@ -107,9 +115,6 @@ func paragraphs(rr []rune) []int {
 
 // sentences splits the rune slice into sentences, returning the
 // indices of the words.
-//
-// Sentences are defined as slices of words seperated runes in the
-// set '.;!?'.
 func sentences(rr []rune) []int {
 	ii := make([]int, 1)
 	ended := false
@@ -133,8 +138,6 @@ func sentences(rr []rune) []int {
 
 // words splits the rune slice into words, returning the indices of
 // the first rune in each word.
-//
-// Words are defined as slices of runes seperated by whitespace.
 func words(rr []rune) []int {
 	ii := make([]int, 1)
 	ended := false
@@ -175,14 +178,16 @@ func ending(r rune) bool {
 	return false
 }
 
-func index(ii []int, idx int) (int, int, bool) {
+// index returns the beginning and end of the region of a location
+// in the given index and the index of that region.
+func index(ii []int, loc int) (int, int, int) {
 	sum := 0
-	for _, i := range ii {
+	for index, i := range ii {
 		sum += i
-		if sum <= int(idx) {
+		if sum <= int(loc) {
 			continue
 		}
-		return sum - i, sum, true
+		return index, sum - i, sum
 	}
-	return 0, 0, false
+	return 0, 0, 0
 }
