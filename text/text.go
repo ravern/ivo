@@ -74,10 +74,6 @@ func (txt *Text) check(loc Location) {
 
 // lines splits the rune slice into lines, returning the indices of
 // the first rune in each line.
-//
-// Lines are defined as slices of runes seperated by one '\n' rune.
-// The result includes the '\n' rune at the end of each line (except
-// the last line, which ends in 0.
 func lines(rr []rune) []int {
 	ii := make([]int, 1)
 
@@ -94,9 +90,6 @@ func lines(rr []rune) []int {
 
 // paragraphs splits the rune slice into paragraphs, returning the
 // indices of the sentences.
-//
-// Paragraphs are defined as slices of sentences seperated by more
-// than one '\n' rune.
 func paragraphs(rr []rune) []int {
 	ii := make([]int, 1)
 	count := 0
@@ -122,9 +115,6 @@ func paragraphs(rr []rune) []int {
 
 // sentences splits the rune slice into sentences, returning the
 // indices of the words.
-//
-// Sentences are defined as slices of words seperated runes in the
-// set '.;!?'.
 func sentences(rr []rune) []int {
 	ii := make([]int, 1)
 	ended := false
@@ -148,8 +138,6 @@ func sentences(rr []rune) []int {
 
 // words splits the rune slice into words, returning the indices of
 // the first rune in each word.
-//
-// Words are defined as slices of runes seperated by whitespace.
 func words(rr []rune) []int {
 	ii := make([]int, 1)
 	ended := false
@@ -190,16 +178,16 @@ func ending(r rune) bool {
 	return false
 }
 
-// index returns the start and end of the region of a location in
-// the given index, and whether the region exists.
-func index(ii []int, loc int) (int, int) {
+// index returns the beginning and end of the region of a location
+// in the given index and the index of that region.
+func index(ii []int, loc int) (int, int, int) {
 	sum := 0
-	for _, i := range ii {
+	for index, i := range ii {
 		sum += i
 		if sum <= int(loc) {
 			continue
 		}
-		return sum - i, sum
+		return index, sum - i, sum
 	}
-	return 0, 0
+	return 0, 0, 0
 }

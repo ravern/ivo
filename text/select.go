@@ -4,7 +4,7 @@ package text
 // is on.
 func (txt *Text) SelectParagraph(loc Location) Region {
 	txt.check(loc)
-	begin, end := index(txt.paragraphs, int(loc))
+	_, begin, end := index(txt.paragraphs, int(loc))
 	return Region{Begin: Location(begin), End: Location(end)}
 }
 
@@ -18,7 +18,7 @@ func (txt *Text) SelectParagraphInner(loc Location) Region {
 // on.
 func (txt *Text) SelectSentence(loc Location) Region {
 	txt.check(loc)
-	begin, end := index(txt.sentences, int(loc))
+	_, begin, end := index(txt.sentences, int(loc))
 	return Region{Begin: Location(begin), End: Location(end)}
 }
 
@@ -31,7 +31,7 @@ func (txt *Text) SelectSentenceInner(loc Location) Region {
 // SelectWord returns the Region of the word the Location is on.
 func (txt *Text) SelectWord(loc Location) Region {
 	txt.check(loc)
-	begin, end := index(txt.words, int(loc))
+	_, begin, end := index(txt.words, int(loc))
 	return Region{Begin: Location(begin), End: Location(end)}
 }
 
