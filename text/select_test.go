@@ -13,6 +13,11 @@ func TestText_SelectParagraph(t *testing.T) {
 		want text.Region
 	}{
 		{
+			rr:   []rune{},
+			loc:  0,
+			want: text.Region{Begin: 0, End: 0},
+		},
+		{
 			rr:   []rune("Hello world!\n \nMy name is Jeff!"),
 			loc:  13,
 			want: text.Region{Begin: 0, End: 15},

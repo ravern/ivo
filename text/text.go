@@ -29,33 +29,33 @@ func NewText(rr []rune) *Text {
 	}
 }
 
-// Raw returns the raw rune slice contained in Text.
-func (t *Text) Raw() []rune {
-	return t.rr[:len(t.rr)-1]
+// Raw returns the raw rune slice contained in Textxt.
+func (txt *Text) Raw() []rune {
+	return txt.rr[:len(txt.rr)-1]
 }
 
 // RegionRaw returns the raw rune slice contained in Text, within the
 // Region provided.
-func (t *Text) RegionRaw(reg Region) []rune {
-	t.check(reg.Begin)
-	t.check(reg.End)
+func (txt *Text) RegionRaw(reg Region) []rune {
+	txt.check(reg.Begin)
+	txt.check(reg.End)
 
-	return t.rr[reg.Begin:reg.End]
+	return txt.rr[reg.Begin:reg.End]
 }
 
 // Len returns the length of the rune slice.
-func (t *Text) Len() int {
-	return len(t.rr) - 1
+func (txt *Text) Len() int {
+	return len(txt.rr) - 1
 }
 
 // RemoveTrailingWhitespace returns a new Region without the trailing
 // whitespace.
-func (t *Text) RemoveTrailingWhitespace(reg Region) Region {
-	t.check(reg.Begin)
-	t.check(reg.End)
+func (txt *Text) RemoveTrailingWhitespace(reg Region) Region {
+	txt.check(reg.Begin)
+	txt.check(reg.End)
 
 	for i := reg.End - 1; i >= 0; i-- {
-		if !whitespace(t.rr[i]) {
+		if !whitespace(txt.rr[i]) {
 			return Region{Begin: reg.Begin, End: Location(i + 1)}
 		}
 	}
@@ -66,8 +66,8 @@ func (t *Text) RemoveTrailingWhitespace(reg Region) Region {
 //
 // If the Location is within the bounds, nothing will happen. If it
 // isn't, then it will panic with an out of bounds message.
-func (t *Text) check(loc Location) {
-	if int(loc) < 0 || int(loc) >= len(t.rr) {
+func (txt *Text) check(loc Location) {
+	if int(loc) < 0 || int(loc) >= len(txt.rr) {
 		panic("runtime error: index out of bounds")
 	}
 }
@@ -192,14 +192,14 @@ func ending(r rune) bool {
 
 // index returns the start and end of the region of a location in
 // the given index, and whether the region exists.
-func index(ii []int, loc int) (int, int, bool) {
+func index(ii []int, loc int) (int, int) {
 	sum := 0
 	for _, i := range ii {
 		sum += i
 		if sum <= int(loc) {
 			continue
 		}
-		return sum - i, sum, true
+		return sum - i, sum
 	}
-	return 0, 0, false
+	return 0, 0
 }
