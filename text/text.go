@@ -48,6 +48,20 @@ func (t *Text) Len() int {
 	return len(t.rr) - 1
 }
 
+// RemoveTrailingWhitespace returns a new Region without the trailing
+// whitespace.
+func (t *Text) RemoveTrailingWhitespace(reg Region) Region {
+	t.check(reg.Begin)
+	t.check(reg.End)
+
+	for i := reg.End - 1; i >= 0; i-- {
+		if !whitespace(t.rr[i]) {
+			return Region{Begin: reg.Begin, End: Location(i + 1)}
+		}
+	}
+	return Region{Begin: reg.Begin, End: reg.End}
+}
+
 // check checks whether the Location provided is within the bounds.
 //
 // If the Location is within the bounds, nothing will happen. If it
@@ -176,11 +190,13 @@ func ending(r rune) bool {
 	return false
 }
 
-func index(ii []int, idx int) (int, int, bool) {
+// index returns the start and end of the region of a location in
+// the given index, and whether the region exists.
+func index(ii []int, loc int) (int, int, bool) {
 	sum := 0
 	for _, i := range ii {
 		sum += i
-		if sum <= int(idx) {
+		if sum <= int(loc) {
 			continue
 		}
 		return sum - i, sum, true
