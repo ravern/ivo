@@ -33,3 +33,30 @@ func (txt *Text) Delete(loc Location, n int) Location {
 
 	return Location(int(loc) - n)
 }
+
+// DeleteMultiple n runes before all the specified Locations within
+// the Text.
+//
+// The given Location slice should be sorted in ascending order. This
+// is important, or the offset will not be tracked properly. The distance
+// between each Location should not be smaller than n.
+//
+// DeleteMultiple takes into account the offset caused by previous
+// deletions.  For example, deleting 1 from 'hello' at 0 and 3 will
+// result in 'elo'.
+func (txt *Text) DeleteMultiple(locs []Location, n int) []Location {
+	newLocs := make([]Location, len(locs))
+
+	offset := 0
+	for i, loc := range locs {
+		loc = Location(int(loc) - offset)
+		txt.check(loc)
+
+		newLoc := txt.Delete(loc, n)
+		newLocs[i] = newLoc
+
+		offset += int(loc) - int(newLoc)
+	}
+
+	return newLocs
+}

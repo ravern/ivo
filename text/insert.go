@@ -33,8 +33,8 @@ func (txt *Text) Insert(loc Location, rr []rune) Location {
 // is important, or the offset will not be tracked properly.
 //
 // InsertMultiple takes into account the offset caused by previous
-// insertions. For example, inserting 'hello' at 0 and 3 will result
-// in 'hhelhlo'.
+// insertions. For example, inserting 'h' to 'hello' at 0 and 3 will
+// result in 'hhelhlo'.
 func (txt *Text) InsertMultiple(locs []Location, rr []rune) []Location {
 	newLocs := make([]Location, len(locs))
 
