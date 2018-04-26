@@ -74,6 +74,7 @@ func Run() {
 		}
 
 		data := make([]byte, 32)
+
 		switch e := termbox.PollRawEvent(data); e.Type {
 		case termbox.EventRaw:
 			data := data[:e.N]
@@ -82,18 +83,23 @@ func Run() {
 				e.Type = termbox.EventKey
 				e.Key = termbox.KeyEsc
 			}
+
 			switch e.Type {
 			case termbox.EventKey:
 				win.Key(newContext(), newKey(e))
 			case termbox.EventMouse:
 				win.Mouse(newContext(), newMouse(e))
 			}
+
 		case termbox.EventResize:
 			win.Resize(newContext())
+
 		case termbox.EventInterrupt:
 			break
+
 		case termbox.EventError:
 			log.Errorf("termbox: polled error event: %v", e.Err)
+
 		default:
 			log.Errorf("termbox: polled unknown event")
 		}

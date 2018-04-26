@@ -56,10 +56,9 @@ func newContext() *context {
 	cols, rows := termbox.Size()
 	buf := newBuffer(cols, rows)
 
-	ctx = &context{
+	return &context{
 		buf: buf,
 	}
-	return ctx
 }
 
 // Logger should be used to perform all logging.
@@ -93,7 +92,6 @@ func (ctx *context) Render() {
 		return
 	}
 
-	// Perform actual rendering
 	for row := 0; row < ctx.buf.Rows; row++ {
 		for col := 0; col < ctx.buf.Cols; col++ {
 			c, ok := ctx.buf.Get(col, row)
@@ -112,6 +110,7 @@ func (ctx *context) Render() {
 			termbox.SetCell(col, row, c.Rune, fg, bg)
 		}
 	}
+
 	if err := termbox.Flush(); err != nil {
 		log.Errorf("termbox: failed to flush: %v", err)
 	}

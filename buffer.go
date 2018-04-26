@@ -4,8 +4,7 @@ package ivo
 type Buffer struct {
 	Cols int
 	Rows int
-
-	cc [][]*Cell
+	cc   [][]*Cell
 }
 
 // newBuffer creates a new collection of cells with the specified
@@ -15,6 +14,7 @@ func newBuffer(cols, rows int) *Buffer {
 	for i := range cc {
 		cc[i] = make([]*Cell, cols)
 	}
+
 	return &Buffer{
 		Cols: cols,
 		Rows: rows,
@@ -29,6 +29,7 @@ func (b Buffer) Set(col, row int, c Cell) {
 	if row >= b.Rows || col >= b.Cols {
 		return
 	}
+
 	b.cc[row][col] = &c
 }
 
@@ -38,7 +39,9 @@ func (b Buffer) Get(col, row int) (Cell, bool) {
 	if row >= b.Rows || col >= b.Cols {
 		return Cell{}, false
 	}
+
 	c := b.cc[row][col]
+
 	return *c, c != nil
 }
 
