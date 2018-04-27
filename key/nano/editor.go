@@ -26,19 +26,19 @@ func NewEditorMapper(h EditorHandler) *key.Mapper {
 
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowLeft},
-	}, h.Prev)
+	}, h.MovePrev)
 
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowRight},
-	}, h.Next)
+	}, h.MoveNext)
 
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowUp},
-	}, h.PrevLine)
+	}, h.MovePrevLine)
 
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowDown},
-	}, h.NextLine)
+	}, h.MoveNextLine)
 
 	m.Set(EditorMode, []ivo.Key{
 		{Rune: 'k', Mod: ivo.KeyModCtrl},

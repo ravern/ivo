@@ -4,12 +4,22 @@ import "ivoeditor.com/ivo"
 
 // Cursor represents a handler for cursor-related actions.
 type Cursor interface {
-	Beginning(ivo.Context, []ivo.Key) // go to beginning
-	End(ivo.Context, []ivo.Key)       // go to end
-	Next(ivo.Context, []ivo.Key)      // next rune
-	NextWord(ivo.Context, []ivo.Key)  // next word
-	NextLine(ivo.Context, []ivo.Key)  // next line
-	Prev(ivo.Context, []ivo.Key)      // previous rune
-	PrevWord(ivo.Context, []ivo.Key)  // previous word
-	PrevLine(ivo.Context, []ivo.Key)  // previous line
+	MoveBeginning(ivo.Context, []ivo.Key) // move to beginning
+	MoveEnd(ivo.Context, []ivo.Key)       // move to end
+
+	MoveNext(ivo.Context, []ivo.Key)     // move to next rune
+	MoveNextWord(ivo.Context, []ivo.Key) // move to next word
+	MoveNextLine(ivo.Context, []ivo.Key) // move to next line
+
+	MovePrev(ivo.Context, []ivo.Key)     // move to previous rune
+	MovePrevWord(ivo.Context, []ivo.Key) // move to previous word
+	MovePrevLine(ivo.Context, []ivo.Key) // move to previous line
+
+	SelectNext(ivo.Context, []ivo.Key)     // select next rune
+	SelectNextWord(ivo.Context, []ivo.Key) // select next word
+	SelectNextLine(ivo.Context, []ivo.Key) // select next line
+
+	SelectPrev(ivo.Context, []ivo.Key)     // select previous rune
+	SelectPrevWord(ivo.Context, []ivo.Key) // select previous word
+	SelectPrevLine(ivo.Context, []ivo.Key) // select previous line
 }
