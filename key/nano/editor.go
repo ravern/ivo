@@ -2,8 +2,8 @@ package nano
 
 import (
 	"ivoeditor.com/ivo"
+	"ivoeditor.com/ivo/handler"
 	"ivoeditor.com/ivo/key"
-	"ivoeditor.com/ivo/key/handler"
 )
 
 // Modes used in the editor.
@@ -23,24 +23,30 @@ func NewEditorMap(h EditorHandler) *key.Map {
 
 	// Root mode
 	m.SetFallback(EditorMode, h.Raw)
+
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowLeft},
-	}, h.MovePrev)
+	}, handler.KeyFunc(h.MovePrev))
+
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowRight},
-	}, h.MoveNext)
+	}, handler.KeyFunc(h.MoveNext))
+
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowUp},
-	}, h.MovePrevLine)
+	}, handler.KeyFunc(h.MovePrevLine))
+
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowDown},
-	}, h.MoveNextLine)
+	}, handler.KeyFunc(h.MoveNextLine))
+
 	m.Set(EditorMode, []ivo.Key{
 		{Rune: 'k', Mod: ivo.KeyModCtrl},
-	}, h.Cut)
+	}, handler.KeyFunc(h.Cut))
+
 	m.Set(EditorMode, []ivo.Key{
 		{Rune: 'u', Mod: ivo.KeyModCtrl},
-	}, h.Paste)
+	}, handler.KeyFunc(h.Paste))
 
 	return m
 }

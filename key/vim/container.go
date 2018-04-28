@@ -2,8 +2,8 @@ package vim
 
 import (
 	"ivoeditor.com/ivo"
+	"ivoeditor.com/ivo/handler"
 	"ivoeditor.com/ivo/key"
-	"ivoeditor.com/ivo/key/handler"
 )
 
 // Modes used in the container.
@@ -17,7 +17,7 @@ type ContainerHandler interface {
 	handler.Proxy
 	handler.Prompt
 
-	Command(ivo.Context, []ivo.Key)
+	Command(ivo.Context)
 }
 
 // NewContainerMap creates a new key.Mapper for the container.
@@ -26,18 +26,21 @@ func NewContainerMap(h ContainerHandler) *key.Map {
 
 	// Forward mode
 	m.SetFallback(ContainerForwardMode, h.Forward)
+
 	m.Set(ContainerForwardMode, []ivo.Key{
 		{Rune: ':'},
-	}, h.Command)
+	}, handler.KeyFunc(h.Command))
 
 	// Command mode
 	m.SetFallback(ContainerCommandMode, h.Raw)
+
 	m.Set(ContainerCommandMode, []ivo.Key{
 		{Code: ivo.KeyCodeEnter},
-	}, h.Confirm)
+	}, handler.KeyFunc(h.Confirm))
+
 	m.Set(ContainerCommandMode, []ivo.Key{
 		{Code: ivo.KeyCodeEsc},
-	}, h.Cancel)
+	}, handler.KeyFunc(h.Cancel))
 
 	return m
 }

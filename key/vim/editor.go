@@ -2,8 +2,8 @@ package vim
 
 import (
 	"ivoeditor.com/ivo"
+	"ivoeditor.com/ivo/handler"
 	"ivoeditor.com/ivo/key"
-	"ivoeditor.com/ivo/key/handler"
 )
 
 // Modes used in the editor.
@@ -29,33 +29,38 @@ func NewEditorMap(h EditorHandler) *key.Map {
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Rune: 'i'},
 	}, h.Insert)
+
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowLeft},
-	}, h.MovePrev)
+	}, handler.KeyFunc(h.MovePrev))
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Rune: 'h'},
-	}, h.MovePrev)
+	}, handler.KeyFunc(h.MovePrev))
+
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowRight},
-	}, h.MoveNext)
+	}, handler.KeyFunc(h.MoveNext))
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Rune: 'l'},
-	}, h.MoveNext)
+	}, handler.KeyFunc(h.MoveNext))
+
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowUp},
-	}, h.MovePrevLine)
+	}, handler.KeyFunc(h.MovePrevLine))
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Rune: 'k'},
-	}, h.MovePrevLine)
+	}, handler.KeyFunc(h.MovePrevLine))
+
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowDown},
-	}, h.MoveNextLine)
+	}, handler.KeyFunc(h.MoveNextLine))
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Rune: 'j'},
-	}, h.MoveNextLine)
+	}, handler.KeyFunc(h.MoveNextLine))
 
 	// Insert mode
 	m.SetFallback(EditorInsertMode, h.Raw)
+
 	m.Set(EditorInsertMode, []ivo.Key{
 		{Code: ivo.KeyCodeEsc},
 	}, h.Normal)
