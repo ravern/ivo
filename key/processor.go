@@ -7,18 +7,18 @@ import (
 	"ivoeditor.com/ivo"
 )
 
-// Mapper provides state and timeouts for processing keys via Map.
+// Processor provides state and timeouts for processing keys via Map.
 //
-// Mapper runs its own loop in the background to process incoming
+// Processor runs its own loop in the background to process incoming
 // key presses. For full use in a ivo.Window, all key events should
-// be forwarded to the Mapper, which will then process and call the
+// be forwarded to the Processor, which will then process and call the
 // handlers with the correct ivo.Contexts.
-type Mapper struct {
+type Processor struct {
 	// Timeout is how long before the handler of the current key
 	// combination is used, instead of waiting for more keys.
 	//
 	// For example, if the Map contains handler for 'j' and 'jk',
-	// and the key 'j' is processed, the Mapper will then wait for
+	// and the key 'j' is processed, the Processor will then wait for
 	// the duration of Timeout for the 'k' key. After waiting, if the
 	// 'k' key still isn't pressed, the 'j' handler will be used.
 	//
@@ -41,9 +41,9 @@ type event struct {
 	key ivo.Key
 }
 
-// NewMapper creates a new Mapper.
-func NewMapper(m *Map) *Mapper {
-	return &Mapper{
+// NewProcessor creates a new Processor.
+func NewProcessor(m *Map) *Processor {
+	return &Processor{
 		Timeout: 2 * time.Second,
 		m:       m,
 		events:  make(chan *event),
@@ -51,20 +51,20 @@ func NewMapper(m *Map) *Mapper {
 }
 
 // Process processes the key.
-func (mr *Mapper) Process(ctx ivo.Context, k ivo.Key) {
-	mr.init.Do(func() {
-		go mr.process()
+func (p *Processor) Process(ctx ivo.Context, k ivo.Key) {
+	p.init.Do(func() {
+		go p.process()
 	})
 
 	e := &event{
 		ctx: ctx,
 		key: k,
 	}
-	mr.events <- e
+	p.events <- e
 }
 
 // process is the key event loop.
-func (mr *Mapper) process() {
+func (p *Processor) process() {
 	var (
 		// kk is the current key buffer
 		kk []ivo.Key
@@ -88,10 +88,10 @@ func (mr *Mapper) process() {
 
 		// Wait for a key or timeout.
 		select {
-		case e := <-mr.events:
+		case e := <-p.events:
 			ctx = e.ctx
 			k = e.key
-		case <-time.After(mr.Timeout):
+		case <-time.After(p.Timeout):
 			if handler != nil {
 				handler(ctx, kk)
 			}
@@ -105,7 +105,7 @@ func (mr *Mapper) process() {
 		// Get the corresponding handler for the keys in the
 		// current buffer.
 		var more, ok bool
-		handler, more, ok = mr.m.Get(mr.Mode, kk)
+		handler, more, ok = p.m.Get(p.Mode, kk)
 
 		// If no handler is found, log it and reset.
 		if !ok {

@@ -14,7 +14,7 @@ type event struct {
 	sleep time.Duration
 }
 
-func TestMapper_Process(t *testing.T) {
+func TestProcessor_Process(t *testing.T) {
 	tests := []struct {
 		mappings []mapping
 		mode     string
@@ -132,12 +132,12 @@ func TestMapper_Process(t *testing.T) {
 			})
 		}
 
-		mr := key.NewMapper(m)
-		mr.Timeout = test.timeout
-		mr.Mode = test.mode
+		p := key.NewProcessor(m)
+		p.Timeout = test.timeout
+		p.Mode = test.mode
 
 		for _, event := range test.events {
-			mr.Process(mock.NewContext(), event.key)
+			p.Process(mock.NewContext(), event.key)
 			time.Sleep(event.sleep)
 		}
 
