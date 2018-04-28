@@ -30,10 +30,15 @@ type Mapper struct {
 	// The default value of mode is an empty string.
 	Mode string
 
-	m    *Map
-	init sync.Once
-	ctxs chan ivo.Context
-	keys chan ivo.Key
+	m      *Map
+	init   sync.Once
+	events chan *event
+}
+
+// event represents a key press along with its ivo.Context.
+type event struct {
+	ctx ivo.Context
+	key ivo.Key
 }
 
 // NewMapper creates a new Mapper.
@@ -41,8 +46,7 @@ func NewMapper(m *Map) *Mapper {
 	return &Mapper{
 		Timeout: 2 * time.Second,
 		m:       m,
-		ctxs:    make(chan ivo.Context),
-		keys:    make(chan ivo.Key),
+		events:  make(chan *event),
 	}
 }
 
@@ -51,18 +55,28 @@ func (mr *Mapper) Process(ctx ivo.Context, k ivo.Key) {
 	mr.init.Do(func() {
 		go mr.process()
 	})
-	mr.ctxs <- ctx
-	mr.keys <- k
+
+	e := &event{
+		ctx: ctx,
+		key: k,
+	}
+	mr.events <- e
 }
 
 // process is the key event loop.
 func (mr *Mapper) process() {
 	var (
-		kk      []ivo.Key
-		ctx     ivo.Context
+		// kk is the current key buffer
+		kk []ivo.Key
+
+		// ctx is the latest context (to use on timeout)
+		ctx ivo.Context
+
+		// handler is latest handler (to use on timeout)
 		handler func(ivo.Context, []ivo.Key)
 	)
 
+	// reset resets everything to their original values
 	reset := func() {
 		kk = make([]ivo.Key, 0)
 		ctx = nil
@@ -70,38 +84,44 @@ func (mr *Mapper) process() {
 	}
 
 	for {
-		var k ivo.Key
+		var k ivo.Key // current key
 
-		if len(kk) > 0 {
-			select {
-			case ctx = <-mr.ctxs:
-				k = <-mr.keys
-			case <-time.After(mr.Timeout):
-				if handler != nil {
-					handler(ctx, kk)
-				}
-				reset()
-				continue
+		// Wait for a key or timeout.
+		select {
+		case e := <-mr.events:
+			ctx = e.ctx
+			k = e.key
+		case <-time.After(mr.Timeout):
+			if handler != nil {
+				handler(ctx, kk)
 			}
-		} else {
-			ctx = <-mr.ctxs
-			k = <-mr.keys
+			reset()
+			continue
 		}
 
+		// Add the new key to the buffer.
 		kk = append(kk, k)
 
+		// Get the corresponding handler for the keys in the
+		// current buffer.
 		var more, ok bool
 		handler, more, ok = mr.m.Get(mr.Mode, kk)
 
+		// If no handler is found, log it and reset.
 		if !ok {
 			ctx.Logger().Errorf("key: failed to find mapping for %v", kk)
 			reset()
 			continue
 		}
+
+		// Since there are more possible handlers, poll the
+		// next key.
 		if more {
 			continue
 		}
 
+		// Since a handler is found and there are no more
+		// possible handlers, run the current one and reset.
 		if handler != nil {
 			handler(ctx, kk)
 		}
