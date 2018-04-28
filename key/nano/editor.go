@@ -17,36 +17,30 @@ type EditorHandler interface {
 	handler.Text
 }
 
-// NewEditorMapper creates a new key.Mapper for the editor.
-func NewEditorMapper(h EditorHandler) *key.Mapper {
+// NewEditorMap creates a new key.Mapper for the editor.
+func NewEditorMap(h EditorHandler) *key.Map {
 	m := key.NewMap()
 
 	// Root mode
 	m.SetFallback(EditorMode, h.Raw)
-
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowLeft},
 	}, h.MovePrev)
-
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowRight},
 	}, h.MoveNext)
-
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowUp},
 	}, h.MovePrevLine)
-
 	m.Set(EditorMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowDown},
 	}, h.MoveNextLine)
-
 	m.Set(EditorMode, []ivo.Key{
 		{Rune: 'k', Mod: ivo.KeyModCtrl},
 	}, h.Cut)
-
 	m.Set(EditorMode, []ivo.Key{
 		{Rune: 'u', Mod: ivo.KeyModCtrl},
 	}, h.Paste)
 
-	return key.NewMapper(m)
+	return m
 }

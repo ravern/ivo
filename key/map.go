@@ -5,6 +5,10 @@ import (
 )
 
 // Map is a map of keys to handlers, with support for modes.
+//
+// Map uses a tree of handlers internally to represent key combinations.
+// Therefore, when requesting the handler for a certain combination of
+// keys, Map will also return further information about the node.
 type Map struct {
 	modes map[string]*node
 }
@@ -51,7 +55,7 @@ func (m *Map) SetFallback(mode string, handler func(ivo.Context, []ivo.Key)) {
 // second bool is the ok flag. It represents whether a handler exists
 // for the given key combination.
 //
-// If the given mode has a fallback handler, and no actions are found
+// If the given mode has a fallback handler, and no handlers are found
 // for the given key combination, the fallback handler will be returned,
 // with the more flag set to false and the ok flag set to true.
 func (m *Map) Get(mode string, kk []ivo.Key) (func(ivo.Context, []ivo.Key), bool, bool) {

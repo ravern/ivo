@@ -50,7 +50,7 @@ func NewMapper(m *Map) *Mapper {
 	}
 }
 
-// Process sends the key to the background loop for processing.
+// Process processes the key.
 func (mr *Mapper) Process(ctx ivo.Context, k ivo.Key) {
 	mr.init.Do(func() {
 		go mr.process()

@@ -21,36 +21,32 @@ type EditorHandler interface {
 	Insert(ivo.Context, []ivo.Key)
 }
 
-// NewEditorMapper creates a new key.Mapper for the editor.
-func NewEditorMapper(h EditorHandler) *key.Mapper {
+// NewEditorMap creates a new key.Map for the editor.
+func NewEditorMap(h EditorHandler) *key.Map {
 	m := key.NewMap()
 
 	// Normal mode
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Rune: 'i'},
 	}, h.Insert)
-
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowLeft},
 	}, h.MovePrev)
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Rune: 'h'},
 	}, h.MovePrev)
-
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowRight},
 	}, h.MoveNext)
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Rune: 'l'},
 	}, h.MoveNext)
-
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowUp},
 	}, h.MovePrevLine)
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Rune: 'k'},
 	}, h.MovePrevLine)
-
 	m.Set(EditorNormalMode, []ivo.Key{
 		{Code: ivo.KeyCodeArrowDown},
 	}, h.MoveNextLine)
@@ -60,10 +56,9 @@ func NewEditorMapper(h EditorHandler) *key.Mapper {
 
 	// Insert mode
 	m.SetFallback(EditorInsertMode, h.Raw)
-
 	m.Set(EditorInsertMode, []ivo.Key{
 		{Code: ivo.KeyCodeEsc},
 	}, h.Normal)
 
-	return key.NewMapper(m)
+	return m
 }
