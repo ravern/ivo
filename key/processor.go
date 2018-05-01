@@ -1,6 +1,7 @@
 package key
 
 import (
+	"math"
 	"sync"
 	"time"
 
@@ -86,12 +87,19 @@ func (p *Processor) process() {
 	for {
 		var k ivo.Key // current key
 
+		// If no keys are available, wait forever,
+		// otherwise, wait for the given timeout.
+		duration := p.Timeout
+		if len(kk) == 0 {
+			duration = time.Duration(math.MaxInt64)
+		}
+
 		// Wait for a key or timeout.
 		select {
 		case e := <-p.events:
 			ctx = e.ctx
 			k = e.key
-		case <-time.After(p.Timeout):
+		case <-time.After(duration):
 			if handler != nil {
 				handler(ctx, kk)
 			}
