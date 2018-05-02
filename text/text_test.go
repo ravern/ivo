@@ -1,32 +1,10 @@
 package text_test
 
 import (
-	"reflect"
 	"testing"
 
 	"ivoeditor.com/ivo/text"
 )
-
-func TestText_Raw(t *testing.T) {
-	tests := [][]rune{
-		[]rune{},
-		[]rune("Hello world!"),
-		[]rune("This is the first sentence. This is the second."),
-		[]rune("This is the first paragraph.\n\nThis is the second."),
-		[]rune("Boom clap sound of my heart"),
-		[]rune("I'm in love with the shape of you"),
-		[]rune("Oh I oh I oh I oh I\nOh I oh I oh I oh I"),
-	}
-
-	for i, test := range tests {
-		txt := text.NewText(test)
-		got := txt.Raw()
-
-		if !reflect.DeepEqual(test, got) {
-			t.Errorf("test %d: want %s got %s", i, string(test), string(got))
-		}
-	}
-}
 
 func TestText_Len(t *testing.T) {
 	tests := []struct {

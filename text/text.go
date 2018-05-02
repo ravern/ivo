@@ -22,25 +22,41 @@ type Text struct {
 func NewText(rr []rune) *Text {
 	return &Text{
 		rr:         append(rr, 0),
-		lines:      lines(rr),
-		paragraphs: paragraphs(rr),
-		sentences:  sentences(rr),
-		words:      words(rr),
+		lines:      buildLines(rr),
+		paragraphs: buildParagraphs(rr),
+		sentences:  buildSentences(rr),
+		words:      buildWords(rr),
 	}
 }
 
-// Raw returns the raw rune slice contained in Text.
-func (txt *Text) Raw() []rune {
-	return txt.rr[:len(txt.rr)-1]
-}
-
-// RegionRaw returns the raw rune slice contained in Text, within the
-// Region provided.
-func (txt *Text) RegionRaw(reg Region) []rune {
+// Subtext returns the text in the given Region as a new Text.
+func (txt *Text) Subtext(reg Region) *Text {
 	txt.check(reg.Begin)
 	txt.check(reg.End)
 
-	return txt.rr[reg.Begin:reg.End]
+	begin, _, _ := index(txt.lines, int(reg.Begin))
+	end, _, _ := index(txt.lines, int(reg.End))
+	lines := txt.lines[begin:end]
+
+	begin, _, _ = index(txt.paragraphs, int(reg.Begin))
+	end, _, _ = index(txt.paragraphs, int(reg.End))
+	paragraphs := txt.paragraphs[begin:end]
+
+	begin, _, _ = index(txt.sentences, int(reg.Begin))
+	end, _, _ = index(txt.sentences, int(reg.End))
+	sentences := txt.sentences[begin:end]
+
+	begin, _, _ = index(txt.words, int(reg.Begin))
+	end, _, _ = index(txt.words, int(reg.End))
+	words := txt.words[begin:end]
+
+	return &Text{
+		rr:         append(txt.rr[reg.Begin:reg.End], 0),
+		lines:      lines,
+		paragraphs: paragraphs,
+		sentences:  sentences,
+		words:      words,
+	}
 }
 
 // Len returns the length of the rune slice.
@@ -55,7 +71,7 @@ func (txt *Text) RemoveTrailingWhitespace(reg Region) Region {
 	txt.check(reg.End)
 
 	for i := reg.End - 1; i >= 0; i-- {
-		if !whitespace(txt.rr[i]) {
+		if !isWhitespace(txt.rr[i]) {
 			return Region{Begin: reg.Begin, End: Location(i + 1)}
 		}
 	}
@@ -72,9 +88,9 @@ func (txt *Text) check(loc Location) {
 	}
 }
 
-// lines splits the rune slice into lines, returning the indices of
+// buildLines splits the rune slice into buildLines, returning the indices of
 // the first rune in each line.
-func lines(rr []rune) []int {
+func buildLines(rr []rune) []int {
 	ii := make([]int, 1)
 
 	// FIXME handle \r runes
@@ -88,9 +104,9 @@ func lines(rr []rune) []int {
 	return ii
 }
 
-// paragraphs splits the rune slice into paragraphs, returning the
+// buildParagraphs splits the rune slice into buildParagraphs, returning the
 // indices of the sentences.
-func paragraphs(rr []rune) []int {
+func buildParagraphs(rr []rune) []int {
 	ii := make([]int, 1)
 	count := 0
 
@@ -102,7 +118,7 @@ func paragraphs(rr []rune) []int {
 
 		ii[len(ii)-1]++
 
-		if whitespace(r) {
+		if isWhitespace(r) {
 			if r == '\n' {
 				count++
 			}
@@ -113,21 +129,21 @@ func paragraphs(rr []rune) []int {
 	return ii
 }
 
-// sentences splits the rune slice into sentences, returning the
+// buildSentences splits the rune slice into buildSentences, returning the
 // indices of the words.
-func sentences(rr []rune) []int {
+func buildSentences(rr []rune) []int {
 	ii := make([]int, 1)
 	ended := false
 
 	for _, r := range rr {
-		if !whitespace(r) && ended {
+		if !isWhitespace(r) && ended {
 			ii = append(ii, 0)
 			ended = false
 		}
 
 		ii[len(ii)-1]++
 
-		if ending(r) {
+		if isEnding(r) {
 			ended = true
 			continue
 		}
@@ -136,14 +152,14 @@ func sentences(rr []rune) []int {
 	return ii
 }
 
-// words splits the rune slice into words, returning the indices of
-// the first rune in each word.
-func words(rr []rune) []int {
+// buildWords splits the rune slice into buildWords, returning the indices
+// of the first rune in each word.
+func buildWords(rr []rune) []int {
 	ii := make([]int, 1)
 	ended := false
 
 	for _, r := range rr {
-		whitespace := whitespace(r)
+		whitespace := isWhitespace(r)
 
 		if !whitespace && ended {
 			ii = append(ii, 0)
@@ -161,13 +177,13 @@ func words(rr []rune) []int {
 	return ii
 }
 
-// whitespace returns whether the given rune is whitespace.
-func whitespace(r rune) bool {
+// isWhitespace returns whether the given rune is whitespace.
+func isWhitespace(r rune) bool {
 	return unicode.IsSpace(r)
 }
 
-// ending returns whether the given rune is a sentence ending.
-func ending(r rune) bool {
+// isEnding returns whether the given rune is a sentence ending.
+func isEnding(r rune) bool {
 	if r == '.' ||
 		r == '\n' ||
 		r == ';' ||
@@ -178,8 +194,8 @@ func ending(r rune) bool {
 	return false
 }
 
-// index returns the beginning and end of the region of a location
-// in the given index and the index of that region.
+// index returns the index of the region containing the given
+// location, and the beginning and end of that region.
 func index(ii []int, loc int) (int, int, int) {
 	sum := 0
 	for index, i := range ii {
