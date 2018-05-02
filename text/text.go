@@ -29,7 +29,7 @@ func NewText(rr []rune) *Text {
 	}
 }
 
-// Raw returns the raw rune slice contained in Textxt.
+// Raw returns the raw rune slice contained in Text.
 func (txt *Text) Raw() []rune {
 	return txt.rr[:len(txt.rr)-1]
 }
