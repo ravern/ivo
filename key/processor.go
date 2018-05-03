@@ -57,11 +57,10 @@ func (p *Processor) Process(ctx ivo.Context, k ivo.Key) {
 		go p.process()
 	})
 
-	e := &event{
+	p.events <- &event{
 		ctx: ctx,
 		key: k,
 	}
-	p.events <- e
 }
 
 // process is the key event loop.
