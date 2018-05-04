@@ -1,4 +1,4 @@
-// Package ivo implements core packages.
+// Package ivo provides core interfaces and events.
 //
 // The root package provides many of the core interfaces for
 // customizing and creating packages for Ivo. It also contains the
