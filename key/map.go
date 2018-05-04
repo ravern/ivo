@@ -28,16 +28,20 @@ func NewMap() *Map {
 
 // Set sets the handler for the given key combination, for the specified
 // mode.
-func (m *Map) Set(mode string, kk []ivo.Key, handler func(ivo.Context, []ivo.Key)) {
+func (m *Map) Set(mode string, keys []ivo.Key, handler func(ivo.Context, []ivo.Key)) {
 	node := m.mode(mode)
-	for _, k := range kk {
-		child, ok := node.children[k]
+
+	// Keep trying to find child node, creating new node if not found.
+	for _, key := range keys {
+		child, ok := node.children[key]
 		if !ok {
 			child = newNode()
-			node.children[k] = child
+			node.children[key] = child
 		}
+
 		node = child
 	}
+
 	node.handler = handler
 }
 
@@ -58,19 +62,25 @@ func (m *Map) SetFallback(mode string, handler func(ivo.Context, []ivo.Key)) {
 // If the given mode has a fallback handler, and no handlers are found
 // for the given key combination, the fallback handler will be returned,
 // with the more flag set to false and the ok flag set to true.
-func (m *Map) Get(mode string, kk []ivo.Key) (func(ivo.Context, []ivo.Key), bool, bool) {
+func (m *Map) Get(mode string, keys []ivo.Key) (func(ivo.Context, []ivo.Key), bool, bool) {
 	node, ok := m.modes[mode]
 	if !ok {
 		return nil, false, false
 	}
+
+	// Keep a reference to the fallback in case it's needed.
 	fallback := node.handler
-	for _, k := range kk {
-		child, ok := node.children[k]
+
+	// Keep trying to find child node until found or unavailable.
+	for _, key := range keys {
+		child, ok := node.children[key]
 		if !ok {
 			return fallback, false, true
 		}
+
 		node = child
 	}
+
 	return node.handler, len(node.children) != 0, true
 }
 
@@ -78,10 +88,12 @@ func (m *Map) Get(mode string, kk []ivo.Key) (func(ivo.Context, []ivo.Key), bool
 // doesn't exist.
 func (m *Map) mode(mode string) *node {
 	node, ok := m.modes[mode]
+
 	if !ok {
 		node = newNode()
 		m.modes[mode] = node
 	}
+
 	return node
 }
 
