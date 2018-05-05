@@ -1,6 +1,9 @@
 package ivo
 
 // Buffer represents a rectangular collection of Cells.
+//
+// Set and Get will panic with an out of bounds message if an
+// invalid column or row is passed.
 type Buffer struct {
 	Cols int
 	Rows int
@@ -18,26 +21,42 @@ func newBuffer(cols, rows int) *Buffer {
 }
 
 // Set sets a cell at the specified column and row.
-//
-// If the column and/or row exceeds the bounds, nothing will be set.
-func (b *Buffer) Set(col, row int, c Cell) {
-	if row >= b.Rows || col >= b.Cols {
-		return
-	}
+func (b *Buffer) Set(col, row int, c *Cell) {
+	b.check(col, row)
 
-	b.cc[col+row*b.Cols] = &c
+	b.cc[col+row*b.Cols] = c
 }
 
-// Get returns the cell at the specified column and row and whether
-// it exists.
-func (b *Buffer) Get(col, row int) (Cell, bool) {
-	if row >= b.Rows || col >= b.Cols {
-		return Cell{}, false
+// Get returns the cell at the specified column and row.
+func (b *Buffer) Get(col, row int) *Cell {
+	b.check(col, row)
+
+	return b.cc[col+row*b.Cols]
+}
+
+// resize resizes the Buffer with the existing cells pinned to
+// the top left corner of the Buffer.
+func (b *Buffer) resize(cols, rows int) {
+	nb := newBuffer(cols, rows)
+
+	for row := 0; row < b.Rows; row++ {
+		for col := 0; col < b.Cols; col++ {
+			if row < b.Rows && col < b.Cols {
+				c := b.Get(col, row)
+				nb.Set(col, row, c)
+			}
+		}
 	}
 
-	c := b.cc[col+row*b.Cols]
+	*b = *nb
+}
 
-	return *c, c != nil
+// check checks whether the given column and row are within
+// bounds and panics if they are not.
+func (b *Buffer) check(col, row int) {
+	if col >= b.Cols || col < 0 || row >= b.Rows || row < 0 {
+		panic("runtime error: index out of bounds")
+	}
 }
 
 // Cell is a cell on the terminal screen.

@@ -34,7 +34,11 @@ type Context interface {
 	// Buffer is the buffer holding the cells of the screen.
 	//
 	// These are usually not set directly, instead using the
-	// `ivo/window` package to draw different components.
+	// `ivo/render` package to draw different components.
+	//
+	// Buffer is reused from the previous context. If a resize event
+	// occurs, the cells from the previous Buffer will be filled in
+	// from the top left corner of the buffer.
 	Buffer() *Buffer
 
 	// Render updates the screen with the contents of Buffer.
@@ -54,11 +58,15 @@ func newContext() *context {
 	}
 
 	cols, rows := termbox.Size()
-	buf := newBuffer(cols, rows)
-
-	return &context{
-		buf: buf,
+	if ctx.buf.Cols != cols || ctx.buf.Rows != rows {
+		ctx.buf.resize(cols, rows)
 	}
+
+	ctx = &context{
+		buf: ctx.buf,
+	}
+
+	return ctx
 }
 
 // Logger should be used to perform all logging.
@@ -94,10 +102,7 @@ func (ctx *context) Render() {
 
 	for row := 0; row < ctx.buf.Rows; row++ {
 		for col := 0; col < ctx.buf.Cols; col++ {
-			c, ok := ctx.buf.Get(col, row)
-			if !ok {
-				continue
-			}
+			c := ctx.buf.Get(col, row)
 
 			fg := termbox.Attribute(c.Fore)
 			if c.Attr&CellAttrBold != 0 {
