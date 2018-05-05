@@ -40,8 +40,10 @@ type Mouse struct {
 // termbox.Event.
 func newMouse(e termbox.Event) Mouse {
 	var m Mouse
+
 	m.Col = e.MouseX
 	m.Row = e.MouseY
+
 	switch e.Key {
 	case termbox.MouseLeft:
 		m.Action = MouseButtonLeft
@@ -56,6 +58,7 @@ func newMouse(e termbox.Event) Mouse {
 	case termbox.MouseWheelDown:
 		m.Action = MouseWheelDown
 	}
+
 	return m
 }
 
@@ -87,6 +90,7 @@ func (ma MouseAction) String() string {
 	case MouseWheelDown:
 		return "wheelDown"
 	}
+
 	return "invalid"
 }
 
@@ -114,6 +118,7 @@ type Key struct {
 // termbox.Event. It does not handle the aliasing problem.
 func newKey(e termbox.Event) Key {
 	var k Key
+
 	if e.Ch == 0 {
 		switch e.Key {
 		case termbox.KeyF1:
@@ -260,9 +265,11 @@ func newKey(e termbox.Event) Key {
 	} else {
 		k.Rune = e.Ch
 	}
+
 	if e.Mod&termbox.ModAlt != 0 {
 		k.Mod |= KeyModAlt
 	}
+
 	return k
 }
 
@@ -360,6 +367,7 @@ func (kc KeyCode) String() string {
 	case KeyCodeSpace:
 		return "space"
 	}
+
 	return "invalid"
 }
 
@@ -377,12 +385,15 @@ func (km KeyMod) String() string {
 	if km == KeyModNone {
 		return "none"
 	}
+
 	var mods []string
+
 	if km&KeyModCtrl != 0 {
 		mods = append(mods, "ctrl")
 	}
 	if km&KeyModAlt != 0 {
 		mods = append(mods, "alt")
 	}
+
 	return strings.Join(mods, ", ")
 }

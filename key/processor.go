@@ -19,7 +19,7 @@ type Processor struct {
 	// For example, if the Map contains handler for 'j' and 'jk',
 	// and the key 'j' is processed, the Processor will then wait for
 	// the duration of Timeout for the 'k' key. After waiting, if the
-	// 'k' key still isn't pressed, the 'j' handler will be used.
+	// 'k' key still isn't pressed, the handler for 'j' will be used.
 	//
 	// The default value of Timeout is 2 seconds.
 	Timeout time.Duration
@@ -74,7 +74,8 @@ func (p *Processor) Process(ctx ivo.Context, key ivo.Key) {
 	}
 }
 
-// process is the key event loop.
+// process runs a key event loop until a handler is either
+// found or not found.
 func (p *Processor) process() {
 	// When the processing for this combination ends, reset
 	// the processing state

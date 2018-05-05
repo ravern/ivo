@@ -1,2 +1,2 @@
-// Package key implements key mapping and processing.
+// Package key implements key event processing.
 package key
