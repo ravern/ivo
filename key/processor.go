@@ -29,8 +29,7 @@ type Processor struct {
 	// The default value of mode is an empty string.
 	Mode string
 
-	// m is the Map with the key combinations.
-	m *Map
+	m *Map // contains all the key combinations
 
 	// events is the channel to send new key events to.
 	//
